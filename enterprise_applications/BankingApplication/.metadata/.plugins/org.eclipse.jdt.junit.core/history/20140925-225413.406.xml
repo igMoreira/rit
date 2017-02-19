@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?><testrun name="BankTest" project="BankingApplication" tests="2" started="2" failures="0" errors="0" ignored="0">
+  <testsuite name="tests.domain.BankTest" time="0.0">
+    <testcase name="insertBankAgency" classname="tests.domain.BankTest" time="0.0"/>
+    <testcase name="createBank" classname="tests.domain.BankTest" time="0.0"/>
+  </testsuite>
+</testrun>

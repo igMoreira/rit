@@ -1,0 +1,64 @@
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.nio.file.FileSystemException;
+import java.security.InvalidKeyException;
+import java.security.InvalidParameterException;
+import java.util.Scanner;
+
+
+public class Encrypt extends LetterRC4 {
+
+	public Encrypt(String key) throws InvalidKeyException {
+		super(key);
+	}
+	
+	public static void main(String[] args) {
+		
+		if(args.length != 3)
+		{
+			throw new InvalidParameterException("Syntax error: parameters invalid.\n Correct call java Encrypt <key> <ptfile> <ctfile>");
+		}
+		File plainTextFile = new File(args[1]);
+		File cypherTextFile = new File(args[2]);
+		if (!plainTextFile.exists() || !plainTextFile.isFile()) {
+			throw new RuntimeException("FILE ERROR: Plain text file doesn't exist or cannot be accessed.");
+		}
+		if(!cypherTextFile.exists() || !cypherTextFile.isFile())
+		{
+			try {
+				cypherTextFile.createNewFile();
+			} catch (IOException e) {
+				System.out.println("FILE ERROR: Error trying to create a new file for the cypherText, please verify your previleges.");
+			}
+		}
+		LetterRC4 cypher;
+		try {
+			cypher = new Encrypt(args[0]);
+			Scanner scan = new Scanner(plainTextFile);
+			while(scan.hasNextLine())
+			{
+				String text = scan.nextLine();
+				String encrypted = cypher.execute(text);
+				PrintWriter out = new PrintWriter(cypherTextFile);
+				out.print(encrypted);
+			}
+			scan.close();
+			out.close();
+			
+		} catch (InvalidKeyException e) {
+			e.printStackTrace();
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+	}
+	
+	@Override
+	protected byte operationFormula(int a, int b) {
+		return (byte) ((a + b ) % 26);
+	}
+
+}

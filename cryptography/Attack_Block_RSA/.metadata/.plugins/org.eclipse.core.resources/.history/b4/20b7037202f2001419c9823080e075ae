@@ -1,0 +1,11 @@
+import java.util.List;
+
+/**
+ * Provides a interface to different Rsa attacks.
+ * 
+ * @author igMoreira
+ *
+ */
+public interface RsaAttack {
+	public void execute(List<Group> groups);
+}

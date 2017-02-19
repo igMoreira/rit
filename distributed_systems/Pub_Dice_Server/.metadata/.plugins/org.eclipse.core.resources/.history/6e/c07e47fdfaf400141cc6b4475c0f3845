@@ -1,0 +1,18 @@
+import java.net.InetAddress;
+import java.util.LinkedList;
+import java.util.Queue;
+
+
+public class MatchManager {
+
+	private Queue<Player> waitingPlayers = new LinkedList<Player>();
+	
+	public synchronized void joinMatch(String playerName, int port, InetAddress IPAddress)
+	{
+		if(waitingPlayers.isEmpty())
+		{
+			waitingPlayers.add(new Player(playerName, port, IPAddress));
+		}
+	}
+	
+}

@@ -1,0 +1,113 @@
+import java.util.Arrays;
+import java.util.List;
+
+import edu.rit.util.Hex;
+
+
+
+public class CrackSimon {
+
+	public static void main(String[] args) {
+		usage(args);
+		
+		byte[][] ptSet = new byte[args.length/2][3];
+		byte[][] ctSet = new byte[args.length/2][3];
+		
+		for (int i = 0, j=0; j < args.length; i++, j+=2) {
+			try{
+				ptSet[i] = Hex.toByteArray(args[j]);
+//				ctSet[i] = Hex.toByteArray(args[j+1]);
+			}
+			catch(Exception e)
+			{
+				System.out.printf("Not a valid Hex character in the input %s position %d\n",args[j],j);
+				System.exit(2);
+			}
+			try{
+				ctSet[i] = Hex.toByteArray(args[j+1]);
+			}
+			catch(Exception e)
+			{
+				System.out.printf("Not a valid Hex character in the input %s position %d\n",args[j+1],j);
+				System.exit(3);
+			}
+		}
+		
+		MitmAttackSimon attack = new MitmAttackSimon(ptSet, ctSet);
+		List<byte[]> result = attack.execute();
+		for (byte[] bs : result) {
+			System.out.println(Hex.toString(bs));
+		};
+	}
+	
+	private static void usage(String[] args)
+	{
+		if(args.length == 0)
+		{
+			System.out.println("There must be one or more (plaintext, ciphertext) pairs.");
+			System.out.println("java CrackSimon <pt1> <ct1> [<pt2> <ct2> ...]");
+			System.exit(0);
+		}
+		if(args.length%2 != 0)
+		{
+			System.out.println("The input should be given as pairs pt/ct");
+			System.out.println("java CrackSimon <pt1> <ct1> [<pt2> <ct2> ...]");
+			System.exit(1);
+		}
+	}
+	
+	private static void test()
+	{
+		SimonCipher t = new SimonCipher();
+		//	 t.test(Hex.to, plainText)
+		byte[] sub1 = Hex.toByteArray("0000ff");
+//		byte[] sub1 = Hex.toByteArray("D602B2");
+		byte[] sub2 = Hex.toByteArray("005159");
+//		byte[] sub2 = Hex.toByteArray("4B7662");
+		byte[] sub3 = Hex.toByteArray("0096a7");
+//		byte[] sub3 = Hex.toByteArray("FDA03A");
+		byte[] pt = Hex.toByteArray("16D64E9F444F");
+//		byte[] pt = Hex.toByteArray("178F860127E4");
+		byte[] ct = Arrays.copyOf(pt, pt.length);
+
+		for (int i = 0; i < 3; i++) {
+			switch(i)
+			{
+			case 0:
+				ct = t.encrypt(sub1, ct);
+				break;
+			case 1:
+				ct = t.encrypt(sub2, ct);
+				break;
+			case 2:
+				ct = t.encrypt(sub3, ct);
+				break;
+			}
+		}
+		System.out.println(Hex.toString(ct));
+		
+/*		pt = Hex.toByteArray("1107AB88C1BB");
+		ct = Arrays.copyOf(pt, pt.length);
+		for (int i = 0; i < 3; i++) {
+			switch(i)
+			{
+			case 0:
+//				System.out.println();
+				ct = t.decrypt(sub3, ct);
+				System.out.printf("round 3 decrypted : %s\n",Hex.toString(ct));
+				break;
+			case 1:
+//				System.out.println();
+				ct = t.decrypt(sub2, ct);
+				System.out.printf("round 2 decrypted : %s\n",Hex.toString(ct));
+				break;
+			case 2:
+//				System.out.println();
+				ct = t.decrypt(sub1, ct);
+				System.out.printf("round 1 decrypted : %s\n",Hex.toString(ct));
+				break;
+			}
+		}*/
+//		System.out.println(Hex.toString(ct));
+	}
+}

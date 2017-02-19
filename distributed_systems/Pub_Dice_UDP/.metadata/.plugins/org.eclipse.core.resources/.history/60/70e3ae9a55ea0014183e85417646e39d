@@ -1,0 +1,156 @@
+import java.io.IOException;
+import java.net.UnknownHostException;
+
+
+public class MatchController {
+	
+	private static Player realPlayer;
+	private static Player virtualPlayer;
+	private static PubDiceServices model;
+	
+	public MatchController() {
+		model = new ServerProxy();
+	}
+	
+	public void startMatch(PubDiceUI view, String playerName)
+	{
+		view.enableButtons(false);
+		view.setMessage("Waiting for partner");
+		model = null;
+		String[] response = null;
+		try {
+			model = ServerProxy.getInstance();
+		} catch (UnknownHostException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		try {
+			response = model.join(playerName);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		String[] playersInfo = response[0].split(" ");
+		String[] turnInfo = response[1].split(" ");
+		
+		realPlayer = new Player();
+		virtualPlayer = new Player();
+		realPlayer.setName(playersInfo[Integer.parseInt(turnInfo[1])]);
+		virtualPlayer.setName(playersInfo[Integer.parseInt(turnInfo[2])]);
+		realPlayer.setNumber(Integer.parseInt(playersInfo[3]));
+		virtualPlayer.setNumber(realPlayer.getNumber() == 1 ? 2 : 1 );
+		
+		view.setMessage(""+realPlayer.getName()+" -- "+virtualPlayer.getName());
+		if( realPlayer.getNumber() == Integer.parseInt(turnInfo[1]) )
+			view.enableButtons(true);
+		else
+			waitNextTurn(view);
+	}
+	
+	public void rollDie()
+	{
+		
+	}
+	
+	public void flipTile()
+	{
+		
+	}
+	
+	public void quit()
+	{
+		PubDiceServices model = null;
+		try {
+			model = ServerProxy.getInstance();
+		} catch (UnknownHostException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		String[] response = null;
+		response = model.quit();
+		if(response[0].equalsIgnoreCase("quit"))
+			System.exit(0);
+	}
+	
+	public void endTurn(PubDiceUI view)
+	{
+		PubDiceServices model = null;
+		try {
+			model = ServerProxy.getInstance();
+		} catch (UnknownHostException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		String[] response = null; 
+		response = model.endTurn();
+		String[] playerInfo = response[0].split(" ");
+		if(Integer.parseInt(playerInfo[1]) == realPlayer.getNumber())
+		{
+			realPlayer.setScore(Integer.parseInt(playerInfo[1]));
+			view.enableButtons(false);
+		}
+		
+	}
+	
+	private void waitNextTurn(PubDiceUI view)
+	{
+		PubDiceServices model = null;
+		try {
+			model = ServerProxy.getInstance();
+		} catch (UnknownHostException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		String[] response = null;
+		response = model.waitNextTurn();
+		if(response.length == 2)
+			showWinner(response, view);
+		else
+		{
+			String[] scoreInfo = response[0].split(" ");
+			int scoreID = Integer.parseInt(scoreInfo[1]);
+			if(scoreID == realPlayer.getNumber())
+				realPlayer.setNumber(Integer.parseInt(scoreInfo[2]));
+			else
+				virtualPlayer.setNumber(Integer.parseInt(scoreInfo[2]));
+			view.setMessage( 
+					(realPlayer.getNumber() == 1) 
+					? realPlayer.getName() + " " + realPlayer.getScore() + " -- " + virtualPlayer.getName() 
+					: virtualPlayer.getName() + " " + virtualPlayer.getScore() + " -- " + realPlayer.getName());
+		}
+		view.enableButtons(true);
+	}
+	
+	private void showWinner(String[] response, PubDiceUI view)
+	{
+		String endMatchPrase = "";
+		String[] scoreInfo = response[0].split(" ");
+		String[] winnerInfo = response[1].split(" ");
+		int scoreID = Integer.parseInt(scoreInfo[1]);
+		if(realPlayer.getNumber() == scoreID)
+			realPlayer.setScore(Integer.parseInt(scoreInfo[2]));
+		else
+			virtualPlayer.setScore(Integer.parseInt(scoreInfo[2]));
+		int winnerID = Integer.parseInt(winnerInfo[1]);
+		if(winnerID == 0)
+			endMatchPrase = "Tie!";
+		else if(realPlayer.getNumber() == winnerID)
+			endMatchPrase = realPlayer.getName() + " wins!";
+		else
+			endMatchPrase = virtualPlayer.getName() + " wins!";
+		view.setMessage( 
+				(realPlayer.getNumber() == 1) 
+				? realPlayer.getName() + " " + realPlayer.getScore() + " -- " + virtualPlayer.getName() + " " + virtualPlayer.getScore() + " -- " + endMatchPrase 
+				: virtualPlayer.getName() + " " + virtualPlayer.getScore() + " -- " + realPlayer.getName() + " " + realPlayer.getScore() + " -- " + endMatchPrase);
+	}
+}

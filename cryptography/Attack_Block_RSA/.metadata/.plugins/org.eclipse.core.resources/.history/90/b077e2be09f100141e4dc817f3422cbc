@@ -1,0 +1,13 @@
+import java.io.FileReader;
+import java.io.InputStream;
+import java.math.BigInteger;
+
+
+public class RsaDecrypt {
+
+	public static void main(String[] args) {
+		FileReader file = new FileReader(args[0]);
+		
+	}
+	
+}

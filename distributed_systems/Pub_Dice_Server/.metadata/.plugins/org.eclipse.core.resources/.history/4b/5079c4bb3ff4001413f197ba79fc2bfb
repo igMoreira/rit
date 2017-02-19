@@ -1,0 +1,16 @@
+import java.net.DatagramSocket;
+
+
+public class Udp extends CommunicationProtocol{
+	private DatagramSocket server;
+	
+	public Udp() {
+		this.server = new DatagramSocket(port);
+	}
+	
+	@Override
+	public void sendRequest(String request) {
+		// TODO Auto-generated method stub
+	}
+
+}

@@ -1,0 +1,35 @@
+import java.io.IOException;
+import java.net.DatagramPacket;
+import java.net.DatagramSocket;
+
+
+public class UdpReceiver extends ReceiverThread {
+	private DatagramSocket server;
+	private byte[] receiveData;
+	private DatagramPacket receivePacket;
+	
+	public UdpReceiver(DatagramSocket server) {
+		this.server = server;
+	}
+	
+	@Override
+	public synchronized void start() {
+		while(true)
+		{
+			receiveData = new byte[1024];
+			receivePacket = new DatagramPacket(receiveData, receiveData.length);
+			try {
+				server.receive(receivePacket);
+			} catch (IOException e) {
+				System.out.println("NETWORK ERROR: Error receiving packet");
+				e.printStackTrace();
+				System.exit(0);
+			}
+			ResponseController handler = new ResponseController(
+					new String(receiveData),
+					receivePacket.getPort(),
+					receivePacket.getAddress());
+			handler.start();
+		}
+	}
+}

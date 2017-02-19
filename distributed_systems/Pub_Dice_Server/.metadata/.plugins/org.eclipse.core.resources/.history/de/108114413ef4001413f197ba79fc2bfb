@@ -1,0 +1,10 @@
+
+public class UdpSender extends SenderThread {
+
+	@Override
+	public void sendMessage() {
+		// TODO Auto-generated method stub
+
+	}
+
+}

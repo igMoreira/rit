@@ -1,0 +1,19 @@
+import java.util.BitSet;
+
+
+public class ParallelCellularAutomaton {
+
+	private BitSet updateRule;
+	
+	public ParallelCellularAutomaton(BitSet updateRule) {
+		this.updateRule = updateRule;
+	}
+	
+	public BitSet calcNextState(BitSet currentState)
+	{
+		for (int i = 0; i < currentState.length(); i++) {
+			Worker w = new Worker();
+			w.calcPositionState(currentState, currentState, i);
+		}
+	}
+}

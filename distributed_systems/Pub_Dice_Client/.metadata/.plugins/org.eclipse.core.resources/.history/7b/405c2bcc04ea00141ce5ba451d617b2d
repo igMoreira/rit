@@ -1,0 +1,8 @@
+
+public interface Server {
+	
+	public String join()
+	{
+		
+	}
+}

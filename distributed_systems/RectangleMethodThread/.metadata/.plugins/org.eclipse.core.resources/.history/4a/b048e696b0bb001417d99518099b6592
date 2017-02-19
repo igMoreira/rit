@@ -1,0 +1,71 @@
+import java.security.InvalidParameterException;
+
+
+/***
+ * 
+ * @author igMoreira
+ *	Will provide the user an executable application, will be responsible
+ *	for get the user input and validate it.
+ */
+public class ComputeArea {
+
+	/***
+	 * Executable method
+	 * @param args: The user input passed through the command line.
+	 * @InvalidParameterException: If the parameters provided by the user are incorrect this execeptionis thrown
+	 * 
+	 */
+	public static void main(String[] args) {
+		if(args.length < 5)
+		{
+			throw new InvalidParameterException("SYNTAX ERROR: The correct syntax is: "
+					+ "ComputeArea <threads> <intervals> <start> <end> <function>");
+		}
+		
+	}
+	
+	/***
+	 * Validates the Thread parameter provided by the user.
+	 * This parameter is valid only if is a number greater than 0.
+	 * @return: If the parameter is valid True, otherwise will return False
+	 */
+	private static void validateThreadArgument(Integer threadParameter)
+	{
+		if(threadParameter <= 0)
+			throw new InvalidParameterException("PARAMETER ERROR: The thread number must be greater than zerol");
+	}
+	
+	/***
+	 * Vaidates the Intervals parameter provided by the user.
+	 * This parameter is valid only if is a number greater than 0.
+	 * @return: If the parameter is valid True, otherwise will return False
+	 */
+	private static void validateIntervalsArgument(Integer intervalParameter)
+	{
+		if(intervalParameter <= 0)
+			throw new InvalidParameterException("PARAMETER ERROR: The interval number must be greater than zerol");
+	}
+	
+	/***
+	 * Validates the points provided by the user to calculate the area.
+	 * This parameters are valid only if the starting point is smaller than the end point,
+	 * and both are numbers.
+	 * @return: If the parameter is valid True, otherwise returns False
+	 */
+	private static void validatePointsArgument(Integer a, Integer b)
+	{
+		if(b < a)
+			throw new InvalidParameterException("PARAMETER ERROR: Point B cannot be smaller than point A.");
+	}
+	
+	/***
+	 * Validates if a function provided by the user is valid.
+	 * A function is valid if contains only numbers.
+	 * @return: True if the parameter is valid, False if the parameter is invalid.
+	 */
+	private static void validateFunctionArguments()
+	{
+		throw new UnsupportedOperationException();
+	}
+
+}

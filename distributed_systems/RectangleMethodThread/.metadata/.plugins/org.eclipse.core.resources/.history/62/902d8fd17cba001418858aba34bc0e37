@@ -1,0 +1,12 @@
+
+public class CalcWorker implements Runnable {
+
+	/***
+	 * Will execute the thread.
+	 */
+	@Override
+	public void run() {
+		
+	}
+
+}

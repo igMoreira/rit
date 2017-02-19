@@ -1,0 +1,9 @@
+
+public class PubDice {
+
+	
+	public static void main(String[] args) {
+		PubDiceUI view = new PubDiceUI();
+		view.setTitle("My Pub Dice game");
+	}
+}

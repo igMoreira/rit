@@ -1,0 +1,8 @@
+
+public abstract class OperationMode {
+	private BlockCipher cipher;
+	
+	public OperationMode(BlockCipher cipher) {
+		this.cipher = cipher;
+	}
+}

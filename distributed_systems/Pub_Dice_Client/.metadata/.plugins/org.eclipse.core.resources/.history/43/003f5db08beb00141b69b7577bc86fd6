@@ -1,0 +1,80 @@
+import java.io.IOException;
+import java.net.Socket;
+import java.net.UnknownHostException;
+import java.util.concurrent.locks.Condition;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
+
+
+public class ServerProxy implements PubDiceServices  {
+
+	private ReceiverThread receiver;
+	private SenderThread sender;
+	private static Socket conn;
+	private Condition noRequest;
+	private Condition canRead;
+	
+	public ServerProxy() throws UnknownHostException, IOException {
+	}
+	
+	public ServerProxy(String host, int port) throws UnknownHostException, IOException {
+		if(conn == null)
+		{
+			conn = new Socket(host, port);
+			Lock lock = new ReentrantLock();
+			this.noRequest = lock.newCondition();
+			this.canRead = lock.newCondition();
+			this.receiver = new ReceiverThread(conn.getInputStream(), lock, noRequest, canRead);
+			this.sender = new SenderThread(conn.getOutputStream(), lock, noRequest, canRead);
+			this.receiver.start();
+			this.sender.start();
+		}
+	}
+
+	public ReceiverThread getReceiver() {
+		return receiver;
+	}
+
+	@Override
+	public void join(String playerName) throws IOException {
+		String request = "join "+ playerName;
+		sender.sendRequest(request);
+	}
+
+	@Override
+	public void turnTile(int x, boolean up) throws IOException {
+		String request = "tile "+ x + ((up) ? " up " : " down ");
+		sender.sendRequest(request);
+	}
+
+	@Override
+	public void rollDie() {
+		String request = "roll";
+		sender.sendRequest(request);
+	}
+
+	@Override
+	public void quit() {
+		String request = "quit";
+		sender.sendRequest(request);
+	}
+
+	@Override
+	public void endTurn() {
+		String request = "done";
+		sender.sendRequest(request);
+	}
+	
+	public void closeConnection()
+	{
+		try {
+			receiver.getIn().close();
+			sender.getOut().close();
+			conn.close();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+}

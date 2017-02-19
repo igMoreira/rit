@@ -1,0 +1,17 @@
+import java.io.IOException;
+import java.net.Socket;
+import java.net.UnknownHostException;
+
+
+public class ServerProxy implements Server {
+
+	private final String host = "queeg.cs.rit.edu";
+	private final int port = 4242;
+	private Socket conn;
+	
+	public ServerProxy() throws UnknownHostException, IOException {
+		conn = new Socket(host, port);
+		
+	}
+	
+}

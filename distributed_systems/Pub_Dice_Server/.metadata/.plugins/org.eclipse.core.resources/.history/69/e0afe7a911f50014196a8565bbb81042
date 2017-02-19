@@ -1,0 +1,17 @@
+import java.io.IOException;
+
+
+public class RequestController {
+
+	public void startMatch(Player playerONE, Player playerTWO)
+	{
+		try {
+			PubDiceServices proxy = new ClientProxy(playerONE.getPort(), playerONE.getIPAddress());
+			proxy.join(playerONE.getName(), currentPlayer.getName(), 1);
+			proxy = new ClientProxy(currentPlayer.getPort(), currentPlayer.getIPAddress());
+			proxy.join(playerONE.getName(), currentPlayer.getName(), 2);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+}

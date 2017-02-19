@@ -1,0 +1,130 @@
+import java.util.List;
+
+
+public class ResponseController implements Observer{
+	private static Player realPlayer;
+	private static Player virtualPlayer;
+	private static PubDiceUI view;
+	
+	@Override
+	public void update(List<String> response) {
+		processRequest(response);
+	}
+	
+	public ResponseController(String playerName, PubDiceUI gui) {
+		realPlayer = new Player();
+		virtualPlayer = new Player();
+		view = gui;
+		realPlayer.setName(playerName);
+	}
+	
+	private void processRequest(List<String> response)
+	{
+		for (String r : response) {
+			String[] interpretedResponse = r.split(" ");
+			String command = interpretedResponse[0];
+			switch(command)
+			{
+				case "quit":
+					ServerProxy s = new ServerProxy();
+					s.closeConnection();
+					System.exit(0);
+					break;
+				case "score":
+					scoreUpdate(interpretedResponse);
+					break;
+				case "tile":
+					break;
+				case "dice":
+					diceUpdate(interpretedResponse);
+					break;
+				case "joined":
+					playersUpdate(interpretedResponse);
+					break;
+				case "turn":
+					turnUpdate(interpretedResponse);
+					break;
+				case "win":
+					winUpdate(interpretedResponse);
+					break;
+				default:
+					System.out.println("Invalid server command "+r);
+			}
+		}
+	}
+	
+	private void scoreUpdate(String[] scoreInfo)
+	{
+		int playerNumber = Integer.parseInt(scoreInfo[1]);
+		int score = Integer.parseInt(scoreInfo[2]);
+		if(realPlayer.getNumber() == playerNumber)
+		{
+			realPlayer.setScore(score);
+			if(playerNumber == 1)
+				view.setMessage(""+realPlayer.getName()+" "+ realPlayer.getScore() +" -- "+virtualPlayer.getName());
+			else
+				view.setMessage(""+virtualPlayer.getName()+" "+ virtualPlayer.getScore() +" -- "+realPlayer.getName()+" "+realPlayer.getScore());
+		}
+		else
+		{
+			virtualPlayer.setScore(score);
+			if(playerNumber == 1)
+				view.setMessage(""+virtualPlayer.getName()+" "+ virtualPlayer.getScore() +" -- "+realPlayer.getName());
+			else
+				view.setMessage(""+realPlayer.getName()+" "+ realPlayer.getScore() +" -- "+virtualPlayer.getName()+" "+virtualPlayer.getScore());
+		}
+	}
+	
+	private void playersUpdate(String[] playersInfo)
+	{
+		if(!realPlayer.getName().equalsIgnoreCase(playersInfo[1]))
+			virtualPlayer.setName(playersInfo[1]);
+		else
+			virtualPlayer.setName(playersInfo[2]);
+		realPlayer.setNumber(Integer.parseInt(playersInfo[3]));
+		if( (realPlayer.getNumber() == 1) )
+		{
+			virtualPlayer.setNumber( 2 );
+			view.setMessage(""+realPlayer.getName()+" -- "+virtualPlayer.getName());
+		}
+		else
+		{
+			virtualPlayer.setNumber( 1 );
+			view.setMessage(""+virtualPlayer.getName()+" -- "+realPlayer.getName());
+		}
+	}
+	
+	private void turnUpdate(String[] turnInfo)
+	{
+		int turn = Integer.parseInt(turnInfo[1]);
+		if(turn == realPlayer.getNumber())
+		{
+			view.enableButtons(true);
+			realPlayer.setTurn(!realPlayer.isTurn());
+		}
+	}
+	
+	private void winUpdate(String[] winInfo)
+	{
+		String winMessage = "";
+		int winnerNumber = Integer.parseInt(winInfo[1]);
+		if(winnerNumber == 0)
+			winMessage = " -- Tie!";
+		else if(winnerNumber == realPlayer.getNumber())
+			winMessage = " -- "+ realPlayer.getName()+" wins!";
+		else
+			winMessage = " -- "+ virtualPlayer.getName()+" wins!";
+		view.setMessage(view.getMessage()+winMessage);
+	}
+	
+	private void diceUpdate(String[] diceInfo)
+	{
+		int die = Integer.parseInt(diceInfo[1]);
+		int dieValue = Integer.parseInt(diceInfo[2]);
+		if(realPlayer.isTurn())
+		{
+			view.setDie(die, dieValue);
+		}
+	}
+
+}

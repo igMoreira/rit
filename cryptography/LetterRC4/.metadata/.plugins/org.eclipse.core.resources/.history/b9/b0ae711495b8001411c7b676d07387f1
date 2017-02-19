@@ -1,0 +1,22 @@
+
+public class Decrypt extends LetterRC4{
+
+	public Decrypt(String key) {
+		super(key);
+	}
+	
+	public static void main(String[] args) {
+		String result;
+		String cipherText = "SKOGHUZCRJGBVINOQDJYTJKHARJPNANNMEZCOWKMPQYEAWBISURGZUUJCJBXJUBIGTVSFVFTHFFBUFJUTRLDRBRVEDBGAKAOMQFYIBAGWYNJEGAOFVKSGBRNBQNOWJZECKHLPHSGEGSEGQWXRARGQYGJKBZHDFV";
+		String key = "qwertyuiopasdfghjklzxcvbnm";
+		LetterRC4 cipher = new Decrypt(key);
+		result = cipher.execute(cipherText);
+		System.out.println(result);
+	}
+	
+	@Override
+	protected byte operationFormula(int a, int b) {
+		return (byte) ((a - b + 26) % 26);
+	}
+
+}

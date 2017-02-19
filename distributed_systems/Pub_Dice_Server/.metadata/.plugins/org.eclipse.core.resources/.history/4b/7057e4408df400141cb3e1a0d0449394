@@ -1,0 +1,25 @@
+import java.net.InetAddress;
+
+
+public class ResponseController extends Thread{
+	private String message;
+	private int port;
+	private InetAddress IPAddress;
+	
+	public ResponseController(String message, int port, InetAddress IPAddress) {
+		this.message = message;
+		this.port = port;
+		this.IPAddress = IPAddress;
+	}
+	
+	private void processRequest()
+	{
+		System.out.println(message);
+	}
+	
+	@Override
+	public synchronized void start() {
+		processRequest();
+	}
+	
+}

@@ -1,0 +1,69 @@
+import java.io.IOException;
+
+/**
+ * This class is the MVC controller
+ * part responsible for delegating
+ * task for a specific part
+ * of the model 
+ * 
+ * 
+ * formating and packing a
+ * request to sent to the server.
+ * THIS CLASS DOES NOT SEND AT ALL.
+ * It delegates the send request
+ * for the SenderThread
+ * @author igMoreira
+ *
+ */
+public class RequestController {
+	
+	private PubDiceServices model;
+	
+	/**
+	 * Constructor
+	 */
+	public RequestController() {
+		this.model = new ServerProxy();
+	}
+	
+	/**
+	 * Starts a match
+	 * @param playerName
+	 */
+	public void startMatch(String playerName)
+	{
+		try {
+			model.join(playerName);
+		} catch (IOException e) {
+			System.out.printf("REQUEST ERROR: Error trying to join a game\n");
+			e.printStackTrace();
+			System.exit(2);
+		}
+	}
+	
+	public void rollDie()
+	{
+		model.rollDie();
+	}
+	
+	public void flipTile(int tile, boolean up)
+	{
+		try {
+			model.turnTile(tile, up);
+		} catch (IOException e) {
+			System.out.printf("REQUEST ERROR: Error trying to move a tile\n");
+			e.printStackTrace();
+			System.exit(3);
+		}
+	}
+	
+	public void quit()
+	{
+		model.quit();
+	}
+	
+	public void endTurn()
+	{
+		model.endTurn();
+	}
+}

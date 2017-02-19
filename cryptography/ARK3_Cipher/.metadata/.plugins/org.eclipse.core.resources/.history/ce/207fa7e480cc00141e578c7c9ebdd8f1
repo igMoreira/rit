@@ -1,0 +1,147 @@
+
+
+import edu.rit.util.Packing;
+
+public class Ark3 {
+	 private byte[] keyState = new byte[16];
+	 private final int numRounds = 27;
+	 private int round = 1;
+	 private final int irreducible  = 0x11D; // irreducible polynomial (x8 + x4 + x3 + x2 + 1)
+	 
+	 public Ark3(byte[] key) {
+		this.keyState = key;
+	}
+	 
+	 public byte[] execute(byte[] text) {
+		return Ark3Cipher(text); // text is equals the IV for the first round or the cipherText for the next rounds
+	 }
+	 
+	 private byte[] Ark3Cipher(byte[] state)
+	 {
+		for (int i = 0; i < numRounds; i++) {
+			byte[] subkey = generateSubkey();
+			for (int j = 0; j < subkey.length; j++) {
+				state[j] = (byte) (state[j] ^ subkey[j]);
+			}
+			state = mix(permutation(state));
+		}
+		return state;
+	 }
+	 
+	 private byte[] generateSubkey()
+	 {
+		 // ROTATE 29 bits right
+		 int[] rotl = new int[4];
+		 Packing.packIntLittleEndian(keyState, 0, rotl, 0, 4);
+		 long test = Packing.packLongLittleEndian(rotl, 1);  //CAUTION NOT SURE IF IT IS RIGHT
+		 Long.rotateRight(test, 29);
+		 
+		 // Divide in 8-bit bytes
+		 Packing.unpackLongLittleEndian(test,rotl, 0);
+		 Packing.unpackIntLittleEndian(rotl, 0, keyState, 0, 4);
+		 
+		 //Feed each of the eight most significant bytes through a different substitution box (S-box) as defined above.
+		 //Permute the eight most significant bytes into a different order as defined above.
+		 byte[] RMS = new byte[8];
+		 System.arraycopy(keyState, 7, RMS, 0, 8);
+		 RMS = reverseArray(RMS); // reverse array because the last position of the keystream shall be the first in the RMS
+		 
+		 RMS = permutation(RMS); // permuted 8 most right bytes
+		 
+		 //Mix each pair of the eight most significant bytes together by a mix function as defined above.
+		 byte[] subkey = mix(RMS);
+		 
+		 //Add the round number (1 for the first round, 2 for the second round, etc.) to the least significant byte, using addition in the same field GF(28)/f(x) as the S-box.
+		 keyState[0] += addRound(keyState[0]); 
+		 
+		 //Rejoin the bytes into the 128-bit key state.
+		 RMS = reverseArray(RMS);	// Reverse array because the RMS first position is the last position of the keystream
+		 System.arraycopy(RMS, 0, keyState, 7, 8);
+		 
+		 //The 64 most significant bits of the key state are the subkey.
+		 return subkey;
+	 }
+	 
+	 private byte[] permutation(byte[] state)
+	 {
+		 byte[] result = new byte[16];
+		 for (int i = 0; i < state.length; i++) {
+			 int b = 0xC0; // (x7 + x6)
+			 int a = state[i];
+			 int c = 0x63; // (x6 + x5 + x + 1)
+			 
+			//  (x8 + x4 + x3 + x2 + 1). The formula for the S-box is Si(a) = ((x7 + x6) + i)×a + (x6 + x5 + x + 1)
+			 int d = 0x00;
+			 d = b ^ i; // ((x7 + x6) + i)
+			 d = multiplyGalois(d, a);
+			 d = d ^ c;
+			 result[i] = (byte) d;
+		}
+		 
+		 //Byte 1 moves to position 2.
+		 state[1] = result[0];
+		 //Byte 2 moves to position 5.
+		 state[4] = result[1];
+		 //Byte 3 moves to position 8.
+		 state[7] = result[2];
+		 //Byte 4 moves to position 3.
+		 state[2] = result[3];
+		 //Byte 5 moves to position 6.
+		 state[5] = result[4];
+		 //Byte 6 moves to position 1.
+		 state[0] = result[5];
+		 //Byte 7 moves to position 4.
+		 state[3] = result[6];
+		 //Byte 8 moves to position 7.
+		 state[6] = result[7];
+		 
+		 return state;
+	 }
+	 
+	 private byte[] mix(byte[] state)
+	 {
+		 int m = 0x02; // (x)
+		 int k = 0x03; // (x + 1)
+		 int a = 0x00;
+		 int b = 0x00;
+		 
+		 //(c, d) = Mix(a, b), where c = (x)×a + b and d = a + (x + 1)×b
+		 for (int i = 0; i < state.length; i+=2) {
+			a = state[i];
+			b = state[i+1];
+			state[i] = (byte) ((multiplyGalois(m, a)) ^ b);
+			state[i+1] = (byte) (a ^ (multiplyGalois(k, b)));
+		}
+		 
+		return state;
+	 }
+	 
+	 private byte addRound(byte LMS)
+	 {	 
+		 return LMS ^ round;
+	 }
+	 
+	 private byte[] reverseArray(byte[] array)
+	 {
+		 byte aux;
+		 for (int i = 0; i < array.length/2; i++) {
+				aux = array[i];
+				array[i] = array[(array.length - 1)-i];
+				array[(array.length - 1)-i] = aux;
+		}
+		return array;
+	 }
+	 
+	 private int multiplyGalois(int a, int b)
+	 {
+		 int c = 0;
+		 for (int bit = 0x80; bit > 0; bit >>= 1)
+		 {
+			 c <<= 1;
+			 if ((c & 0x100) != 0) c ^= irreducible;
+			 if ((b & bit) != 0) c ^= a;
+		 }
+		 return c;
+	 }
+	 
+}

@@ -1,0 +1,174 @@
+import java.util.Arrays;
+import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
+
+
+/***
+ * 
+ * @author igMoreira
+ *	Will provide the user an executable application, will be responsible
+ *	for get the user input and validate it.
+ */
+public class ComputeArea {
+
+	/***
+	 * Executable method
+	 * @param args: The user input passed through the command line.
+	 * @InvalidParameterException: If the parameters provided by the user are incorrect this execeptionis thrown
+	 */
+	public static void main(String[] args) {
+		if(args.length < 5)
+		{
+			System.out.println("SYNTAX ERROR: The correct syntax is: "
+					+ "ComputeArea <threads> <intervals> <start> <end> <function>");
+			System.exit(0);
+		}
+		Integer thread = validateThreadArgument(args[0]);
+		Integer interval = validateIntervalsArgument(args[1]);
+		Double[] points = validatePointsArgument(args[2], args[3]);
+		Double[] function = validateFunctionArguments(Arrays.copyOfRange(args, 4, args.length));
+		SharedBuffer totalArea = new SharedBuffer();
+		calculate(totalArea, function, points[0], points[1], thread, interval);
+		
+		// PRINTING OUTPUTS
+		
+		System.out.println("Function: ");
+		System.out.printf("Range: %f - %f\n",points[0],points[1]);
+		System.out.println();
+		System.out.println("Results: ");
+		List<Double> results = totalArea.getThreadsResult();
+		for (int i = 0; i < results.size(); i++) {
+			System.out.printf("%d. %f",i+1, results.get(i));
+		}
+		System.out.printf("Total: %f\n",totalArea.getArea());
+	}
+	
+	/***
+	 * Validates the Thread parameter provided by the user.
+	 * This parameter is valid only if is a number greater than 0.
+	 * 
+	 * @return: The value of the Thread parameter in integer type.
+	 */
+	private static Integer validateThreadArgument(String threadParameter)
+	{
+		Integer val = null;
+		try{
+			val = Integer.parseInt(threadParameter);
+		}
+		catch(NumberFormatException e)
+		{
+			System.out.println("The thread argument must be a number.");
+			System.exit(0);
+		}
+		if(val <= 0)
+			System.out.println("PARAMETER ERROR: The thread number must be greater than zero");
+		return val;
+	}
+	
+	/***
+	 * Vaidates the Intervals parameter provided by the user.
+	 * This parameter is valid only if is a number greater than 0.
+	 * 
+	 * @return: The value of the intervals parameter in Integer type
+	 */
+	private static Integer validateIntervalsArgument(String intervalParameter)
+	{
+		Integer val = null;
+		try{
+			val = Integer.parseInt(intervalParameter);
+		}
+		catch(NumberFormatException e)
+		{
+			System.out.println("The Interval argument must be a number.");
+			System.exit(0);
+		}
+		if(val <= 0)
+		{
+			System.out.println("PARAMETER ERROR: The interval number must be greater than zerol");
+		}
+		return val;
+	}
+	
+	/***
+	 * Validates the points provided by the user to calculate the area.
+	 * This parameters are valid only if the starting point is smaller than the end point,
+	 * and both are numbers.
+	 * 
+	 * @return: An array of integer containing the points A and B
+	 */
+	private static Double[] validatePointsArgument(String a, String b)
+	{
+		Double points[] = new Double[2];
+		try{
+			points[0] = Double.parseDouble(a);
+			points[1] = Double.parseDouble(b);
+		}
+		catch(NumberFormatException e)
+		{
+			System.out.println("The points argument must numbers.");
+			System.exit(0);
+		}
+		if(points[1] < points[0])
+		{
+			System.out.println("PARAMETER ERROR: Point B cannot be smaller than point A.");
+			System.exit(0);
+		}
+		return points;
+	}
+	
+	/***
+	 * Validates if a function provided by the user is valid.
+	 * A function is valid if contains only numbers.
+	 * @return: An array of integers containing the values of the function arguments
+	 */
+	private static Double[] validateFunctionArguments(String[] function)
+	{
+		Double functionValues[] = new Double[function.length];
+		for (int i=0; i< function.length; i++) {
+			try{
+				functionValues[i] = Double.parseDouble(function[i]);
+			}
+			catch(NumberFormatException e)
+			{
+				System.out.println("The function arguments must be only numbers.");
+				System.exit(0);
+			}
+		}
+		return functionValues;
+	}
+	
+	/***
+	 * Calculates the value of curved figured area using threads and rectangle method.
+	 * 
+	 * @param totalArea: The shared buffer between threads
+	 * @param function: Arguments of the function provided by the user
+	 * @param startPoint: start interval coordinate in x-axis
+	 * @param endPoint: end interval coordinate in x-axis
+	 * @param numThreads: number of threads to be created
+	 * @param numIntervals: number of rectangles used in the rectangle method
+	 * @return the total area of the figure uder the curve 
+	 */
+	private static void calculate(SharedBuffer totalArea, Double[] function, Double startPoint, Double endPoint, int numThreads, int numIntervals)
+	{
+		ExecutorService threadPool = Executors.newCachedThreadPool();
+		double lengthThreadDivision = (endPoint-startPoint)/numThreads;
+		for (int i = 0; i < numThreads; i++) {
+			endPoint = startPoint+lengthThreadDivision;
+			threadPool.execute(new CalcWorker(totalArea,function, startPoint, endPoint, numIntervals));
+			startPoint = endPoint;
+		}
+		threadPool.shutdown();
+		boolean taskEnded = false;
+		while(!taskEnded)
+		{
+			try {
+				taskEnded = threadPool.awaitTermination(1000, TimeUnit.MILLISECONDS);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+
+}

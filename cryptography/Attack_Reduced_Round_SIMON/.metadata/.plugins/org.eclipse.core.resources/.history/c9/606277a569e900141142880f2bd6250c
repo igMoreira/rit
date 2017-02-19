@@ -1,0 +1,18 @@
+import java.util.HashMap;
+import java.util.List;
+
+/**
+ * Used as a wrapper to the hastable used to store the 
+ * bottom up results.
+ * 
+ * @author igMoreira
+ *
+ */
+public class SubkeyGuessTable extends HashMap<Byte,List<List<Byte>>>{
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	
+}

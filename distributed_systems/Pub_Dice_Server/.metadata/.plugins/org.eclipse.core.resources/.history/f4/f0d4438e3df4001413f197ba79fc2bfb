@@ -1,0 +1,31 @@
+import java.util.ArrayList;
+import java.util.List;
+
+
+public abstract class ReceiverThread extends Thread implements Subject{
+	
+	private List<Observer> observers = new ArrayList<Observer>();
+	
+	
+	/**
+	 * Allows Observers to subscribe in this Subject
+	 * When this class has a change in its state
+	 * it notifies the observers
+	 */
+	@Override
+	public void subscribe(Observer o) {
+		this.observers.add(o);
+	}
+
+	/**
+	 * When there is a change in this class
+	 * state this method notifies all the 
+	 * observers
+	 */
+	@Override
+	public void notifyObservers() {
+		for (Observer o : observers) {
+			o.update(response);
+		}
+	}
+}

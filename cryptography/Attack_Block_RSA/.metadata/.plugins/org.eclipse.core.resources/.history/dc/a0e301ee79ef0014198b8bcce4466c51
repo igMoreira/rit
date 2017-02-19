@@ -1,0 +1,14 @@
+import java.math.BigInteger;
+
+
+public class BlockRSA {
+	public BigInteger encrypt(String plainText)
+	{
+		return null;
+	}
+	
+	public String decrypt(String cipherText)
+	{
+		return null;
+	}
+}

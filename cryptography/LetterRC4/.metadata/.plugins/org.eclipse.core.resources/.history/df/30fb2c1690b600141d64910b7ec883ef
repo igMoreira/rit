@@ -1,0 +1,17 @@
+package main;
+
+import interfaces.StreamCipher;
+
+public class Main {
+
+	public static void main(String[] args) {
+		String result;
+		String cipherText = "SKOGHUZCRJGBVINOQDJYTJKHARJPNANNMEZCOWKMPQYEAWBISURGZUUJCJBXJUBIGTVSFVFTHFFBUFJUTRLDRBRVEDBGAKAOMQFYIBAGWYNJEGAOFVKSGBRNBQNOWJZECKHLPHSGEGSEGQWXRARGQYGJKBZHDFV";
+		byte key = "qwertyuiopasdfghjklzxcvbnm";
+		StreamCipher cipher = new cipher_core.LetterRC4();
+		cipher.setKey(key.getBytes());
+		result = cipher.decrypt(cipherText);
+		System.out.println(result);
+	}
+
+}

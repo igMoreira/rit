@@ -1,0 +1,4 @@
+
+public interface CommunicationProtocol {
+	public void sendRequest();
+}

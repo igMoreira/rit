@@ -1,0 +1,23 @@
+import java.util.BitSet;
+
+
+public class CA {
+
+	public static void main(String[] args) {
+
+		String updateRule = "01111000";
+		BitSet initialState = new BitSet();
+		
+		
+	}
+	
+	public static int bitSetToInt(BitSet bitSet)
+	{
+	    int bitInteger = 0;
+	    for(int i = 0 ; i < 32; i++)
+	        if(bitSet.get(i))
+	            bitInteger |= (1 << i);
+	    return bitInteger;
+	}
+
+}

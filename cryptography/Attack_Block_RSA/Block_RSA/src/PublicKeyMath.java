@@ -1,0 +1,22 @@
+import java.math.BigInteger;
+
+/**
+ * Provides math tools to use in the
+ * public key crypto system calculations.
+ * 
+ * @author igMoreira
+ *
+ */
+public class PublicKeyMath {
+
+	/**
+	 * Calcs the Euler Totient of p and q.
+	 * @param p : A big integer prime number
+	 * @param q : A big integer prime number
+	 * @return : Euler Totient = (p-1) * (q-1)
+	 */
+	public static BigInteger eulerTotient(BigInteger p, BigInteger q)
+	{
+		return (p.subtract(BigInteger.ONE).multiply(q.subtract(BigInteger.ONE)));
+	}
+}

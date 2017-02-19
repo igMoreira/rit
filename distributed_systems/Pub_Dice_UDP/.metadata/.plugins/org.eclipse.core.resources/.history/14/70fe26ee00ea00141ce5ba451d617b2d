@@ -1,0 +1,10 @@
+
+public class ServerProxy implements Server {
+
+	@Override
+	public boolean connect() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+	
+}

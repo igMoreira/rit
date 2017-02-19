@@ -1,0 +1,10 @@
+import java.util.BitSet;
+
+
+public class Worker {
+	
+	public Bitset calcNextState(BitSet currentState, int[] updateRule )
+	{
+		
+	}
+}

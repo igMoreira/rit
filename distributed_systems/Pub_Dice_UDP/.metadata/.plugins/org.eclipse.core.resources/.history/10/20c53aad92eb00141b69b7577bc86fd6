@@ -1,0 +1,51 @@
+import java.io.IOException;
+
+public class RequestController {
+	
+	private PubDiceServices model;
+	
+	public RequestController() {
+		this.model = new ServerProxy();
+	}
+	
+	public RequestController(PubDiceServices model) {
+		this.model = model;
+	}
+	
+	public void startMatch(String playerName)
+	{
+		try {
+			model.join(playerName);
+		} catch (IOException e) {
+			System.out.printf("REQUEST ERROR: Error trying to join a game\n");
+			e.printStackTrace();
+			System.exit(2);
+		}
+	}
+	
+	public void rollDie()
+	{
+		model.rollDie();
+	}
+	
+	public void flipTile(int tile, boolean up)
+	{
+		try {
+			model.turnTile(tile, up);
+		} catch (IOException e) {
+			System.out.printf("REQUEST ERROR: Error trying to move a tile\n");
+			e.printStackTrace();
+			System.exit(3);
+		}
+	}
+	
+	public void quit()
+	{
+		model.quit();
+	}
+	
+	public void endTurn()
+	{
+		model.endTurn();
+	}
+}

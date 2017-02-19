@@ -1,0 +1,31 @@
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+
+
+public class ReceiverThread extends Thread{
+
+	private BufferedReader in;
+	
+	public ReceiverThread(InputStream in) {
+		this.in = new BufferedReader(new InputStreamReader(in));
+	}
+	
+	@Override
+	public void run() {
+		String[] response = null;
+		while(true)
+		{
+			try {
+				if(in.ready())
+				{
+				}
+			} catch (IOException e) {
+				System.out.println("IO ERROR: Error trying to access input stream");
+				System.exit(0);
+				e.printStackTrace();
+			}
+		}
+	}
+}

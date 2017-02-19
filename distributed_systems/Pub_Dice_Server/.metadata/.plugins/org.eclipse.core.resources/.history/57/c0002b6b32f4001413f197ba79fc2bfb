@@ -1,0 +1,8 @@
+/**
+ * Provides an interface for the sender 
+ * @author igMoreira
+ *
+ */
+public abstract class SenderThread extends Thread{
+
+}

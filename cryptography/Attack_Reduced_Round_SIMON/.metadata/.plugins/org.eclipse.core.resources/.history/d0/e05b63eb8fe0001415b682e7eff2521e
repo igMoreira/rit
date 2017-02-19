@@ -1,0 +1,38 @@
+import java.util.Arrays;
+
+import edu.rit.util.Hex;
+
+
+
+public class CrackSimon {
+
+	public static void main(String[] args) {
+		SimonTest t = new SimonTest();
+		//	 t.test(Hex.to, plainText)
+		byte[] sub1 = Hex.toByteArray("7E799E");
+//		byte[] sub1 = Hex.toByteArray("D602B2");
+		byte[] sub2 = Hex.toByteArray("0F65B9");
+//		byte[] sub2 = Hex.toByteArray("4B7662");
+		byte[] sub3 = Hex.toByteArray("8DEAB8");
+//		byte[] sub3 = Hex.toByteArray("FDA03A");
+		byte[] pt = Hex.toByteArray("16D64E9F444F");
+//		byte[] pt = Hex.toByteArray("178F860127E4");
+		byte[] ct = Arrays.copyOf(pt, pt.length);
+
+		for (int i = 0; i < 3; i++) {
+			switch(i)
+			{
+			case 0:
+				ct = t.test(sub1, ct);
+				break;
+			case 1:
+				ct = t.test(sub2, ct);
+				break;
+			case 2:
+				ct = t.test(sub3, ct);
+				break;
+			}
+		}
+		System.out.println(Hex.toString(ct));
+	}
+}

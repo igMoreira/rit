@@ -1,0 +1,13 @@
+
+public class Udp extends CommunicationProtocol{
+	
+	public Udp() {
+		
+	}
+	
+	@Override
+	public void sendRequest() {
+		// TODO Auto-generated method stub
+	}
+
+}

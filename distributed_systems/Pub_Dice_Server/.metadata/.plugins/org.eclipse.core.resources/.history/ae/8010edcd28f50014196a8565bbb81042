@@ -1,0 +1,22 @@
+
+public class Match {
+	private Player playerONE;
+	private Player playerTWO;
+	private Player currentPlayer;
+	
+	public Match(Player playerONE, Player playerTWO) {
+		this.playerONE = playerONE;
+		this.playerTWO = playerTWO;
+	}
+
+	public Player getPlayerONE() {
+		return playerONE;
+	}
+
+	public Player getPlayerTWO() {
+		return playerTWO;
+	}
+	
+	
+	
+}

@@ -1,0 +1,16 @@
+
+public class PubDice {
+
+	
+	public static void main(String[] args) {
+		PubDiceUI view = new PubDiceUI();
+		view.setTitle("My Pub Dice client");
+		view.setVisible(true);
+		
+		// Triggers the startMatch in the model
+		RequestController requestController = new RequestController();
+		requestController.startMatch("Someone");
+		
+		ResponseController responseController = new ResponseController("Someone", gui) 
+	}
+}

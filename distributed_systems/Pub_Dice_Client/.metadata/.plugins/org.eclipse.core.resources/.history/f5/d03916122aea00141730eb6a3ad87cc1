@@ -1,0 +1,27 @@
+import java.io.IOException;
+import java.net.UnknownHostException;
+
+
+public class MatchController {
+
+	public void startMatch(PubDiceUI view, String playerName)
+	{
+		view.enableButtons(false);
+		view.setMessage("Waiting for partner");
+		PubDiceServices model = null;
+		String[] response = null;
+		try {
+			model = new ServerProxy();
+		} catch (UnknownHostException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		try {
+			response = model.join(playerName);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+}

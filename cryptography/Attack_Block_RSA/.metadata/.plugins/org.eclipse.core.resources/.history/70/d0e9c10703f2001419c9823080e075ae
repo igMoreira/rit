@@ -1,0 +1,62 @@
+import java.math.BigInteger;
+
+/**
+ * Provides an implementation of the RSA cipher
+ * 
+ * @author igMoreira
+ *
+ */
+public class RSA {
+	private BigInteger modulus;
+	private BigInteger encryptionExponent;
+	private BigInteger decryptionExponent;
+	
+	/**
+	 * Setter for the decryption exponent.
+	 * @param decryptionExponent: A big integer decryption exponent
+	 */
+	public void setDecryptionExponent(BigInteger decryptionExponent) {
+		this.decryptionExponent = decryptionExponent;
+	}
+
+	/**
+	 * Setter for the modulus of the RSA.
+	 * @param modulus: A big integer modulus
+	 */
+	public void setModulus(BigInteger modulus) {
+		this.modulus = modulus;
+	}
+
+	/**
+	 * Setter for the pri
+	 * @param exponent
+	 */
+	public void setExponent(BigInteger exponent) {
+		this.encryptionExponent = exponent;
+	}
+
+	/**
+	 * Encrypts a given plaintext using the
+	 * RSA encryption.
+	 * 
+	 * @param plainText: 2048-bit block to be encrypted.
+	 * @return: 2048-bit block encrypted
+	 */
+	public BigInteger encrypt(BigInteger plainText)
+	{
+		return plainText.modPow(encryptionExponent, modulus);
+	}
+	
+	/**
+	 * Decrypts a given cipher text using the
+	 * RSA decryption.
+	 * 
+	 * @param cipherText: 2048-bit block to be decrypted.
+	 * @return: 2048-bit block decrypted
+	 */
+	public BigInteger decrypt(BigInteger cipherText)
+	{
+		return cipherText.modPow(decryptionExponent, modulus);
+	}
+
+}

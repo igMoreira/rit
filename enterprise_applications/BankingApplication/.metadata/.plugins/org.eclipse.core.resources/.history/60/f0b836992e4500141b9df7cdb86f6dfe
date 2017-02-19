@@ -1,0 +1,12 @@
+package domain.banking.swen.rit;
+
+public class Client {
+
+	private Integer clientId;
+	private String name;
+	
+	public void save(Client client)
+	{
+		
+	}
+}

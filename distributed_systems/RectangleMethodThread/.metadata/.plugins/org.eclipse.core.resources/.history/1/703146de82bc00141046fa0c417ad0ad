@@ -1,0 +1,57 @@
+/***
+ * 
+ * @author igMoreira
+ *	Represents a thread in the system, each thread will work in the calc of the
+ *	area of the curved figured. The number of workers is specified by the user.
+ */
+public class CalcWorker implements Runnable {
+
+	private Double[] function;
+	private Double startPoint;
+	private Double endPoint;
+	private int numIntervals;
+	private SharedBuffer totalArea;
+	
+	public CalcWorker(SharedBuffer buffer, Double[] function, Double startPoint, Double endPoint, int numIntervals) {
+		this.function = function;
+		this.startPoint = startPoint;
+		this.endPoint = endPoint;
+		this.numIntervals = numIntervals;
+		this.totalArea = buffer;
+	}
+	
+	/***
+	 * Will execute the thread.
+	 */
+	@Override
+	public void run() {
+		Double squareLength = (endPoint-startPoint)/numIntervals;
+		Double squareHeigth = 0D;
+		Double area = 0D;
+		for (int i = 0; i < numIntervals; i++) {
+			squareHeigth = calculateFunction(function, startPoint);
+			startPoint = startPoint + squareLength;
+			area += squareLength * squareHeigth;
+		}
+		this.totalArea.addArea(area); 
+	}
+	
+	/***
+	 * @param function: array containing the arguments of the function
+	 * @param x: x-axis coordinate to calculate the function
+	 * @return: The value of f(x)
+	 */
+	private double calculateFunction(Double[] function, Double x)
+	{
+		double result = 0D;
+		Integer[] expoents = new Integer[function.length];
+		for (int i = 0; i < function.length; i++) {
+			expoents[i] = Math.abs(i-(function.length-1));
+		}
+		for (int i = 0; i < function.length; i++) {
+			result += function[i] * (Math.pow(x, expoents[i]));
+		}
+		return result;
+	}
+
+}

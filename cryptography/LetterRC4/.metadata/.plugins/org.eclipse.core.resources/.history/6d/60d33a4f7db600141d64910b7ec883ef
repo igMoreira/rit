@@ -1,0 +1,8 @@
+package interfaces;
+
+public interface StreamCipher {
+
+	public void setKey(byte[] key);
+	public byte[] encrypt(String plainText);
+	public byte[] decrypt(String cipherText);
+}

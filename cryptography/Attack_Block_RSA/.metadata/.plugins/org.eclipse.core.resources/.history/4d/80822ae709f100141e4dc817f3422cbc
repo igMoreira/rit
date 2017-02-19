@@ -1,0 +1,19 @@
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+
+
+public class RsaDecrypt {
+
+	public static void main(String[] args) {
+		BufferedReader in = null;
+		try {
+			FileReader file = new FileReader(args[0]);
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+	}
+	
+}

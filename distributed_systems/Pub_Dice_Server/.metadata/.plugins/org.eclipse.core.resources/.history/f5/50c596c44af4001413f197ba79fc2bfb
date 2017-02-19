@@ -1,0 +1,21 @@
+
+/**
+ * Provides an interface for observers,
+ * basically the Observer pattern being
+ * applied here
+ * 
+ * @author igMoreira
+ *
+ */
+public interface Observer {
+	
+	/**
+	 * The observes are in push mode, i.e.
+	 * when a subject changes the subject itself
+	 * is responsible for providing detailed
+	 * information about the change
+	 * 
+	 * @param response: A given response of the server to be interpreted
+	 */
+	public void update(String response);
+}

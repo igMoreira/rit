@@ -1,0 +1,12 @@
+
+public class FunctionTest {
+
+	
+	public double calculate(Integer[] function, Integer startPoint, Integer endPoint)
+	{
+		int numThreads = 4;
+		int numIntervals = 1;
+		
+		return 0;
+	}
+}

@@ -1,0 +1,47 @@
+import java.util.BitSet;
+
+
+public class ParallelCellularAutomaton {
+
+	private BitSet updateRule;
+	private int smallestPopCounter = Integer.MAX_VALUE;
+	private int smallestPopStep = 0;
+	private int largestPopCounter = 0;
+	private int largestPopStep = 0;
+	
+	public ParallelCellularAutomaton(BitSet updateRule) {
+		this.updateRule = updateRule;
+	}
+	
+	public BitSet calcNextState(BitSet currentState)
+	{
+		BitSet copy = (BitSet) currentState.clone();
+		for (int i = 0; i < currentState.length(); i++) {
+			Worker w = new Worker();
+			copy = w.calcPositionState(copy, updateRule, i);
+		}
+		int popCounter = getPopCounter(copy);
+		if(popCounter > largestPopCounter)
+		{
+			largestPopCounter = popCounter;
+			largestPopStep = CA.getSteps();
+		}
+		else if(popCounter < smallestPopCounter)
+		{
+			smallestPopCounter = popCounter;
+			smallestPopStep = CA.getSteps();
+		}
+		
+		return copy;
+	}
+	
+	public int getPopCounter(BitSet currentState)
+	{
+		int popCounter = 0;
+		for (int i = 0; i < currentState.length(); i++) {
+			if(currentState.get(i))
+				popCounter++;
+		}
+		return popCounter;
+	}
+}

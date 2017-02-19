@@ -1,0 +1,5 @@
+
+public interface RSABlock {
+	public byte[] encrypt(byte[] plainText);
+	public byte[] decrypt(byte[] cipherText);
+}

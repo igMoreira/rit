@@ -1,0 +1,86 @@
+import java.math.BigInteger;
+
+/**
+ * Provides an implementation of the RSA cipher
+ * 
+ * @author igMoreira
+ *
+ */
+public class RSA {
+	private BigInteger modulus;
+	private BigInteger encryptionExponent;
+	
+	public void setModulus(BigInteger modulus) {
+		this.modulus = modulus;
+	}
+
+	public void setExponent(BigInteger exponent) {
+		this.encryptionExponent = exponent;
+	}
+
+	/**
+	 * Encrypts a given plaintext using the
+	 * RSA encryption.
+	 * 
+	 * @param plainText: 2048-bit block to be encrypted.
+	 * @return: 2048-bit block encrypted
+	 */
+	public BigInteger encrypt(BigInteger plainText)
+	{
+		return this.modularExponentiation(plainText,this.encryptionExponent);
+	}
+	
+	/**
+	 * Decrypts a given cipher text using the
+	 * RSA decryption.
+	 * 
+	 * @param cipherText: 2048-bit block to be decrypted.
+	 * @return: 2048-bit block decrypted
+	 */
+	public BigInteger decrypt(BigInteger cipherText, BigInteger modulusTest)
+	{
+		BigInteger p = modulus.gcd(modulusTest);
+		BigInteger q = modulus.divide(p);
+		BigInteger aux = encryptionExponent.modInverse(eulerTotient(p, q));
+		return cipherText.modPow(aux, modulus);
+	}
+	
+	private BigInteger modularExponentiation(BigInteger base, BigInteger exponent)
+	{
+		return base.modPow(exponent, modulus);
+	}
+	
+	private void computeDecryptionExponent()
+	{
+		BigInteger mid = sqrt(modulus);
+		BigInteger p = modulus.divide(mid);
+		BigInteger q = modulus.divide(p);
+		BigInteger TWO = new BigInteger("2");
+		BigInteger odd = mid;
+		while(encryptionExponent.gcd(eulerTotient(p, q)).compareTo(BigInteger.ONE) != 0)
+		{
+			odd = (odd.mod(TWO).compareTo(BigInteger.ZERO) == 0) ? odd.add(BigInteger.ONE) : odd.add(TWO);
+			p = modulus.divide( odd );
+			q = modulus.divide(p);
+		}
+		this.decryptionExponent = encryptionExponent.modInverse(eulerTotient(p, q));
+	}
+	
+	private BigInteger sqrt(BigInteger n)
+	{
+		  BigInteger a = BigInteger.ONE;
+		  BigInteger b = new BigInteger(n.shiftRight(5).add(new BigInteger("8")).toString());
+		  while(b.compareTo(a) >= 0) {
+		    BigInteger mid = new BigInteger(a.add(b).shiftRight(1).toString());
+		    if(mid.multiply(mid).compareTo(n) > 0) b = mid.subtract(BigInteger.ONE);
+		    else a = mid.add(BigInteger.ONE);
+		  }
+		  return a.subtract(BigInteger.ONE);
+	}
+	
+	private BigInteger eulerTotient(BigInteger p, BigInteger q)
+	{
+		return (p.subtract(BigInteger.ONE).multiply(q.subtract(BigInteger.ONE)));
+	}
+
+}

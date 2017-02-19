@@ -1,0 +1,22 @@
+import java.math.BigInteger;
+
+
+public class Group {
+
+	private BigInteger modulus;
+	private BigInteger publicExpoent;
+	private BigInteger privateExpoent;
+	private BigInteger cipherText;
+	private BigInteger plainText;
+	
+	public Group(BigInteger modulus, BigInteger publicExpoent,
+			BigInteger cipherText) {
+		super();
+		this.modulus = modulus;
+		this.publicExpoent = publicExpoent;
+		this.cipherText = cipherText;
+	}
+	
+	
+	
+}

@@ -1,0 +1,21 @@
+package domain.banking.swen.rit;
+
+public class Account {
+	
+	private int accountNumber;
+	private Double balance;
+	
+	public Account(Integer accountId) {
+		
+	}
+	
+	public void save(Account account)
+	{
+		
+	}
+	
+	public Double getBalance() {
+		return balance;
+	}
+ 
+}

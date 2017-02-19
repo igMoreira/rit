@@ -1,0 +1,10 @@
+
+public class Ark3 {
+	 private byte[] key = new byte[7];
+	 
+	 
+	 public byte[] run(byte[] text)
+	 {
+		 throw new UnsupportedOperationException("Not implemented yet");
+	 }
+}

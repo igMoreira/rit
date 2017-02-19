@@ -1,0 +1,4 @@
+
+public interface BlockCipher {
+	public void encrypt(String plainText);
+}

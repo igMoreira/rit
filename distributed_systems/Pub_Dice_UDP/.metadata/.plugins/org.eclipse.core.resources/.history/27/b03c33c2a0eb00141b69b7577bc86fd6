@@ -1,0 +1,13 @@
+/**
+ * Observer pattern being applied.
+ * This is the Subject interface.
+ * The interface to be observed.
+ * 
+ * @author igMoreira
+ *
+ */
+public interface Subject {
+
+	public void subscribe(Observer o);
+	public void notifyObservers();
+}

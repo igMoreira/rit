@@ -1,0 +1,12 @@
+import java.math.BigInteger;
+
+
+public class Group {
+
+	private BigInteger modulus;
+	private BigInteger publicExpoent;
+	private BigInteger privateExpoent;
+	private BigInteger cipherText;
+	private BigInteger plainText;
+	
+}

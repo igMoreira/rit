@@ -1,0 +1,30 @@
+import java.io.IOException;
+
+/**
+ * Defines an interface for the services provided
+ * by the Pub Dice application
+ * @author igMoreira
+ *
+ */
+public interface PubDiceServices {
+	
+	/**
+	 * Allows the user join a game with
+	 * other player
+	 * 
+	 * @param playerName: The real player name
+	 * @throws IOException: If not possible to stablish the match this exception is thrown
+	 */
+	public void join(String playerName) throws IOException;
+	
+	/**
+	 * 
+	 * @param x
+	 * @param up
+	 * @throws IOException
+	 */
+	public void turnTile(int x, boolean up) throws IOException;
+	public void endTurn();
+	public void rollDie();
+	public void quit();
+}

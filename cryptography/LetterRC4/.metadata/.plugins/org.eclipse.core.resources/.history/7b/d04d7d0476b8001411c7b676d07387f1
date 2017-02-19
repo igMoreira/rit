@@ -1,0 +1,10 @@
+
+public class Decrypt extends LetterRC4{
+
+	@Override
+	protected byte operationFormula(int a, int b) {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+}

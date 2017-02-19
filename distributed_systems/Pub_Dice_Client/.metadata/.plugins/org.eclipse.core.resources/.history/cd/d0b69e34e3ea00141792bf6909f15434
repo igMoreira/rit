@@ -1,0 +1,16 @@
+import java.util.List;
+
+
+public class ResponseHandler implements Observer{
+
+	@Override
+	public void update(List<String> response) {
+		
+	}
+	
+	private void proccesRequest(List<String> response)
+	{
+		
+	}
+
+}

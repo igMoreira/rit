@@ -1,0 +1,29 @@
+import java.math.BigInteger;
+
+
+public class BlockRSA {
+	
+	/**
+	 * Uses the RSA as a "block" cipher to
+	 * encrypt a given text.
+	 * 
+	 * @param plainText
+	 * @return: A string containing the cipher text
+	 */
+	public BigInteger encrypt(String plainText)
+	{
+		return null;
+	}
+	
+	/**
+	 * Uses the RSA as a "block" cipher to
+	 * decrypt a given text.
+	 * 
+	 * @param cipherText
+	 * @return: A string containing the plain text
+	 */
+	public String decrypt(String cipherText)
+	{
+		return null;
+	}
+}

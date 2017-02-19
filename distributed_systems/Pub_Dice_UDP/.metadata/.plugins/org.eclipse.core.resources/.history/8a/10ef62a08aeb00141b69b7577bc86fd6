@@ -1,0 +1,59 @@
+import java.io.OutputStream;
+import java.io.PrintWriter;
+import java.util.concurrent.locks.Condition;
+import java.util.concurrent.locks.Lock;
+
+
+public class SenderThread extends Thread{
+	
+	private PrintWriter out;
+	private String request = null;
+	private Lock lock;
+	private Condition noRequest;
+	private Condition canRead;
+	
+	public SenderThread(OutputStream out, Lock lock, Condition noRquest, Condition canRead) {
+		this.out = new PrintWriter(out);
+		this.lock = lock;
+		this.noRequest = noRquest;
+		this.canRead = canRead;
+	}
+	
+	public PrintWriter getOut() {
+		return out;
+	}
+
+	@Override
+	public void run() {
+		while(true)
+		{
+			lock.lock();
+			System.out.println("A");
+			try {
+			while(request == null)
+			{
+				
+					noRequest.await();
+				
+			}
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			out.println(request);
+			out.flush();
+			request = null;
+			canRead.signalAll();
+			finally
+			{
+				
+			}
+		}
+	}
+	
+	public void sendRequest(String request)
+	{
+		this.request = request;
+	}
+
+}

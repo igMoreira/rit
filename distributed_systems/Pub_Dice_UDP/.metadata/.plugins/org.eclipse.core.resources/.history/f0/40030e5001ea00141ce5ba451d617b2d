@@ -1,0 +1,12 @@
+import java.net.Socket;
+
+
+public class ServerProxy implements Server {
+
+	private Socket conn;
+	
+	public ServerProxy() {
+		conn = new Socket(, );
+	}
+	
+}

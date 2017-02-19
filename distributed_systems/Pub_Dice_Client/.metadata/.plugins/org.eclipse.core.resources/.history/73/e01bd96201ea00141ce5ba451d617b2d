@@ -1,0 +1,13 @@
+import java.net.Socket;
+
+
+public class ServerProxy implements Server {
+
+	private Socket conn;
+	private final String host = "queeg.cs.rit.edu";
+	
+	public ServerProxy() {
+		conn = new Socket(, );
+	}
+	
+}

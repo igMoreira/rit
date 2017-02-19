@@ -1,0 +1,4 @@
+
+public interface BlockCipher {
+	public byte[] execute();
+}

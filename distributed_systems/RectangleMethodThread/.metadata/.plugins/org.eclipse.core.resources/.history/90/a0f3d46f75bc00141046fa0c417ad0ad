@@ -1,0 +1,16 @@
+/***
+ * 
+ * @author igMoreira
+ *	Will hold a shared buffer between threads, the value of every thread execution 
+ *	will be the sum of the rectangles areas in the interval the sum of all threads
+ *	values is the desired area of the curved figure.
+ */
+public class SharedBuffer{
+	
+	private float curvedFigureArea = 0; // Will hold the value of the curved figure area
+
+	public synchronized void add(Double value)
+	{
+		
+	}
+}

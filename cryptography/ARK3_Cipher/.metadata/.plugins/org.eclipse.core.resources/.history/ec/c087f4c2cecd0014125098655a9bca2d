@@ -1,0 +1,10 @@
+
+public abstract class OperationMode {
+	private BlockCipher cipher;
+	
+	public OperationMode(BlockCipher cipher) {
+		this.cipher = cipher;
+	}
+	
+	public abstract byte[] execute(byte[] text);
+}

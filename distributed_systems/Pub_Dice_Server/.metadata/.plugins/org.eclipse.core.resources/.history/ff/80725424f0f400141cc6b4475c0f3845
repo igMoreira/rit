@@ -1,0 +1,48 @@
+import java.io.IOException;
+import java.net.InetAddress;
+
+
+public class ClientProxy implements PubDiceServices {
+
+	private static CommunicationProtocol network = null;
+	private int clientPort;
+	private InetAddress clientIPAddress;
+	
+	public ClientProxy(int hostPort, int clientPort, InetAddress clientIPAddress) {
+		if(network == null)
+			network = new Udp(hostPort);
+		this.clientIPAddress = clientIPAddress;
+		this.clientPort = clientPort;
+	}
+	
+	public ClientProxy(int clientPort, InetAddress clientIPAddress) {
+		this.clientIPAddress = clientIPAddress;
+		this.clientPort = clientPort;
+	}
+	
+	@Override
+	public void join(String playerName) throws IOException {
+		network.sendRequest(playerName, clientPort, clientIPAddress);
+	}
+
+	@Override
+	public void turnTile(int x, boolean up) throws IOException {
+		// TODO Auto-generated method stub
+	}
+
+	@Override
+	public void endTurn() {
+		// TODO Auto-generated method stub
+	}
+
+	@Override
+	public void rollDie() {
+		// TODO Auto-generated method stub
+	}
+
+	@Override
+	public void quit() {
+		// TODO Auto-generated method stub
+	}
+
+}

@@ -1,0 +1,14 @@
+package main;
+
+import interfaces.StreamCipher;
+
+public class Main {
+
+	public static void main(String[] args) {
+		String cipherText = "SKOGHUZCRJGBVINOQDJYTJKHARJPNANNMEZCOWKMPQYEAWBISURGZUUJCJBXJUBIGTVSFVFTHFFBUFJUTRLDRBRVEDBGAKAOMQFYIBAGWYNJEGAOFVKSGBRNBQNOWJZECKHLPHSGEGSEGQWXRARGQYGJKBZHDFV";
+		String key = "qwertyuiopasdfghjklzxcvbnm";
+		StreamCipher LetterRC4 = new cipher_core.LetterRC4();
+		s
+	}
+
+}

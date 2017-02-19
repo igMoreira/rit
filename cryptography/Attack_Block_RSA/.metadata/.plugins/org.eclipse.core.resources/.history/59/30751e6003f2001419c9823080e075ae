@@ -1,0 +1,10 @@
+import java.math.BigInteger;
+
+
+public class PublicKeyMath {
+
+	public static BigInteger eulerTotient(BigInteger p, BigInteger q)
+	{
+		return (p.subtract(BigInteger.ONE).multiply(q.subtract(BigInteger.ONE)));
+	}
+}

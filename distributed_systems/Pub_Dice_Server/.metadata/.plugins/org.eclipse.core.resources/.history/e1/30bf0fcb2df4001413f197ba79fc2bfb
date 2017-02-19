@@ -1,0 +1,19 @@
+
+public class PubDiceServer {
+
+	public static void main(String[] args) {
+		usage(args);
+	}
+	
+	private static void usage(String[] args)
+	{
+		if(args.length != 2)
+		{
+			System.out.println("SYNTAX ERROR: java PubDiceServer <host> <port>");
+			System.out.println("<host> is the host name or IP address of the server.");
+			System.out.println("<port> is the port number of the server");
+			System.exit(0);
+		}
+	}
+	
+}

@@ -1,0 +1,27 @@
+import edu.rit.util.Hex;
+
+
+
+public class CrackSimon {
+
+	public static void main(String[] args) {
+	 SimonTest t = new SimonTest();
+//	 t.test(Hex.to, plainText)
+	 byte[] sub1 = Hex.toByteArray("7E799E");
+	 byte[] sub2 = Hex.toByteArray("0F65B9");
+	 byte[] sub3 = Hex.toByteArray("8DEAB8");
+	 byte[] pt = Hex.toByteArray("16D64E9F444F");
+	 
+	 for (int i = 0; i < 3; i++) {
+		switch(i)
+		{
+		case 0:
+			break;
+		case 1:
+			break;
+		case 2:
+			break;
+		}
+	}
+	}
+}

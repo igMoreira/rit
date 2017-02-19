@@ -1,0 +1,56 @@
+import java.io.IOException;
+import java.net.UnknownHostException;
+
+
+public class MatchController {
+	
+	private static Player player;
+	
+	public void startMatch(PubDiceUI view, String playerName)
+	{
+		view.enableButtons(false);
+		view.setMessage("Waiting for partner");
+		PubDiceServices model = null;
+		String[] response = null;
+		try {
+			model = new ServerProxy();
+		} catch (UnknownHostException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		try {
+			response = model.join(playerName);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		String[] playersInfo = response[0].split(" ");
+		String[] turnInfo = response[1].split(" ");
+		
+		player = new Player();
+		player.setName(playersInfo[Integer.parseInt(turnInfo[1])]);
+		player.setNumber(Integer.parseInt(playersInfo[3]));
+		
+		view.setMessage(""+player.getName()+" -- "+playersInfo[2]);
+		if( player.getNumber() == Integer.parseInt(turnInfo[1]) )
+		{
+			view.enableButtons(true);
+		}
+	}
+	
+	public void rollDie()
+	{
+		
+	}
+	
+	public void flipTile()
+	{
+		
+	}
+	
+	public void endTurn(PubDiceUI view)
+	{
+		PubDiceServices model = new ServerProxy();
+	}
+}

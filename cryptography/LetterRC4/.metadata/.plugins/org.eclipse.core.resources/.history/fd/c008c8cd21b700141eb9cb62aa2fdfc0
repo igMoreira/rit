@@ -1,0 +1,24 @@
+package main;
+
+import java.nio.charset.Charset;
+
+import interfaces.StreamCipher;
+
+public class Main {
+
+	public static void main(String[] args) {
+		String result;
+		String plainText = "In the beginning God created the heavens and the earth.\n"+
+							"And the earth was without form and void,\n"+
+							"and darkness was upon the face of the deep;\n"+
+							"and the Spirit of God was moving over the face of the waters.\n";
+		
+		String cipherText = "SKOGHUZCRJGBVINOQDJYTJKHARJPNANNMEZCOWKMPQYEAWBISURGZUUJCJBXJUBIGTVSFVFTHFFBUFJUTRLDRBRVEDBGAKAOMQFYIBAGWYNJEGAOFVKSGBRNBQNOWJZECKHLPHSGEGSEGQWXRARGQYGJKBZHDFV";
+		String key = "qwertyuiopasdfghjklzxcvbnm";
+		StreamCipher cipher = new cipher_core.LetterRC4();
+		cipher.setKey(key);
+		result = cipher.decrypt(cipherText);
+		System.out.println(result);
+	}
+
+}

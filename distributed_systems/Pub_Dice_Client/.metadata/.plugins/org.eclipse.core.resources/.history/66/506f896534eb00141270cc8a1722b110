@@ -1,0 +1,59 @@
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.List;
+
+
+public class ReceiverThread extends Thread implements Subject{
+
+	private BufferedReader in;
+	private List<String> response = null;
+	private List<Observer> observers = new ArrayList<Observer>();
+	
+	public ReceiverThread(InputStream in) {
+		this.in = new BufferedReader(new InputStreamReader(in));
+	}
+	
+	@Override
+	public void run() {
+		while(true)
+		{
+			System.out.println("B");
+			try {
+				if(in.ready())
+				{
+					response = new ArrayList<String>();
+					String aux;
+					while((aux = in.readLine()) != null)
+					{
+						response.add(aux);
+					}
+					notifyObservers();
+				}
+			} catch (IOException e) {
+				System.out.println("IO ERROR: Error trying to access input stream");
+				System.exit(0);
+				e.printStackTrace();
+			}
+			try {
+				sleep(100);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+
+	@Override
+	public void subscribe(Observer o) {
+		this.observers.add(o);
+	}
+
+	@Override
+	public void notifyObservers() {
+		for (Observer o : observers) {
+			o.update(response);
+		}
+	}
+}

@@ -1,0 +1,149 @@
+
+
+import java.nio.charset.Charset;
+import java.security.InvalidKeyException;
+
+/***
+ * 
+ * @author igMoreira
+ *	This is an abstract class for the Letter-RC4. It offers an interface
+ *	and implemented methods for the concrete classes. Its concrete classes
+ *	are Encrypt and Decrypt.
+ */
+public abstract class LetterRC4{
+
+	private byte[] key;			// holds the key passed by the user
+	private byte[] keyStream;	// holds the generated keystream
+	
+	
+	/***
+	 * 	Constructor defined to only create a LetterRC4 object
+	 * 	if a key is provided.
+	 * 
+	 * @param key: The key provided by the user, the user pass
+	 * a String as a key and the validation and conversion is 
+	 * handled in the constructor.
+	 * 
+	 * @throws InvalidKeyException: If the key contains not valid
+	 * characters a exception is thrown and execution interrupted.
+	 * 
+	 * @throws InvalidKeyException: If the key is not 26 characters
+	 * a exception is thrown. 
+	 */
+	public LetterRC4(String key) throws InvalidKeyException {
+		if(key.length() != 26)
+			throw new InvalidKeyException("KEY ERROR: The length of the key must 26 characters");
+		this.key = new byte[key.length()];
+		for (int i = 0; i < key.length(); i++) {
+			key = key.toUpperCase();
+			char aux = key.charAt(i);
+			if( (aux >= 0x41 && aux <= 0x5A) || (aux >= 0x61 && aux <= 0x7A) )
+				this.key[i] = (byte) (aux - 0x41);
+			else
+				throw new InvalidKeyException("KEY ERROR: The key must contain just letters");
+		}
+	}
+	
+	/***
+	 * Used to define an operation that varies within the RC4
+	 * encryption code. The code for encrypt and decrypt is 
+	 * very similiar, what changes is just the formula
+	 * 
+	 * @param a: A given plain text byte or a cypher text byte
+	 * @param b: A given byte of the keystream
+	 * @return: The encrypted/decrypted byte
+	 */
+	protected abstract byte operationFormula(int a, int b);
+	
+	/***
+	 * Initializes the Letter-RC4 execution, converts the provided
+	 * String text to byte[] and the result of the LetterRC4 is
+	 * converted to String again.
+	 * 
+	 * @param text: The text to encrypt/decrypt. A String to keep up 
+	 * with the user type.
+	 * 
+	 * @return: The encrypted/decrypt text in String format.
+	 */
+	protected String execute(String text) {
+		text = text.toUpperCase();
+		byte[] y = text.getBytes(Charset.forName("UTF-8"));
+		text = null;
+		byte[] x = RC4(y);
+		StringBuilder res = new StringBuilder();
+		for (int i = 0; i < x.length; i++) {
+			res.append((char)(x[i]+65));
+		}
+		return res.toString();
+	}
+	
+	/***
+	 * The Letter-RC4 algorithm. This code is responsible for
+	 * encrypting and decrypting the text.
+	 * 
+	 * @param text: Plain or cypher text in byte array format.
+	 * 
+	 * @return: An array of bytes encrypted or decrypted.
+	 */
+	private byte[] RC4(byte[] text)
+	{
+		byte[] tmp = validateText(text);
+		byte[] x = new byte[tmp.length];
+		text = null;
+		generateKeyStream(tmp.length);
+		for (int i = 0; i < tmp.length; i++) {
+			int a = (tmp[i]-0x41);
+			int b = (keyStream[i]);
+			x[i] =  operationFormula(a,b);
+		}
+		return x;
+	}
+	
+	/***
+	 * Responsible for generating the keystream.
+	 * 
+	 * @param textLength: The keystream generated with the same size of the text.
+	 * @return: void. Has no return, the value is set in the attibute.
+	 */
+	private void generateKeyStream(int textLength){
+			int i = 0;
+			int j = 0;
+			byte aux;
+			byte[] S = new byte[26];
+			keyStream = new byte[textLength];
+
+			for (int k = 0; k < S.length; k++) {
+				S[k] = (byte) (key[k % key.length]);
+			}
+
+			for (int counter = 0; counter < textLength; counter++) {
+				i = (i+1)% 26;
+				j = (j+S[i])% 26;
+				aux = S[i];
+				S[i] = S[j];
+				S[j] = aux;
+				keyStream[counter] = S[(S[i]+S[j]) % 26];
+			}
+	}
+	
+	/***
+	 * Gets only the letters of the text provided by the user,
+	 * punctuation and special characters are not used.
+	 *  
+	 * @param text: The array o bytes with the text provided by the user
+	 * @return: An array of bytes with all the letters present in the text.
+	 */
+	private byte[] validateText(byte[] text)
+	{
+		StringBuilder temp = new StringBuilder();
+		for (int i = 0; i < text.length; i++) {
+			if( (text[i] >= 0x41 && text[i] <= 0x5A) || (text[i] >= 0x61 && text[i] <= 0x7A))
+			{
+				temp.append((char)text[i]);
+			}
+		}
+		text = null;
+		return temp.toString().getBytes();
+	}
+
+}

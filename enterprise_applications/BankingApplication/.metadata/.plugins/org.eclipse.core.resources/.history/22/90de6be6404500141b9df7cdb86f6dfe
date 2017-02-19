@@ -1,0 +1,25 @@
+package tests.domain;
+
+import static org.junit.Assert.*;
+
+import org.junit.Test;
+
+import domain.banking.swen.rit.Bank;
+
+public class BankTest {
+
+	@Test
+	public void createBank() {
+		Bank b = new Bank();
+		assertNotNull(b);
+	}
+	
+	@Test
+	public void insertBankData()
+	{
+		Bank b = new Bank();
+		b.setBankAgency(123);
+		b.setAddress(address);
+	}
+
+}

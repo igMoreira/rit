@@ -1,0 +1,49 @@
+
+public class RectangleMethodArea {
+	private SharedBuffer totalArea;
+	
+	public RectangleMethodArea(SharedBuffer buffer) {
+		this.totalArea = buffer;
+	}
+	
+	public double calculate(Double[] function, Double startPoint, Double endPoint)
+	{
+		int numThreads = 1;
+		int numIntervals = 16;
+		double lengthThreadDivision = (endPoint-startPoint)/numThreads;
+		double result = 0D;
+		for (int i = 0; i < numThreads; i++) {
+			endPoint = startPoint+lengthThreadDivision;
+			result += threadCalculation(function, startPoint, endPoint, numIntervals);
+			startPoint=endPoint;
+		}
+		System.out.println(result);
+		return result;
+	}
+	
+	private double threadCalculation(Double[] function, Double startPoint, Double endPoint, int numIntervals)
+	{
+		Double squareLength = (endPoint-startPoint)/numIntervals;
+		Double squareHeigth = 0D;
+		Double area = 0D;
+		for (int i = 0; i < numIntervals; i++) {
+			squareHeigth = calculateFunction(function, startPoint);
+			startPoint = startPoint + squareLength;
+			area += squareLength * squareHeigth;
+		}
+		return area;
+	}
+	
+	private double calculateFunction(Double[] function, Double x)
+	{
+		double result = 0D;
+		Integer[] expoents = new Integer[function.length];
+		for (int i = 0; i < function.length; i++) {
+			expoents[i] = Math.abs(i-(function.length-1));
+		}
+		for (int i = 0; i < function.length; i++) {
+			result += function[i] * (Math.pow(x, expoents[i]));
+		}
+		return result;
+	}
+}

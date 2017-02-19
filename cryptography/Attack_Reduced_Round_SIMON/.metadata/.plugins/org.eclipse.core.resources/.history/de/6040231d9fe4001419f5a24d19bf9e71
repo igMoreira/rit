@@ -1,0 +1,48 @@
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+
+
+public class SubkeyGuessTable extends ArrayList<HashMap<Byte,List<List<Byte>>>>{
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
+	public SubkeyGuessTable() {
+		this.add(new HashMap<Byte, List<List<Byte>>>());
+		this.add(new HashMap<Byte, List<List<Byte>>>());
+		this.add(new HashMap<Byte, List<List<Byte>>>());
+	}
+	
+	public void getPossibleSubkeys()
+	{
+		HashMap<Byte, List<List<Byte>>> table = new HashMap<Byte, List<List<Byte>>>();
+		// CONSTRUCT KEYS
+		table = subkeyTable.get(0);
+		List<List<Byte>> bytes0 = new ArrayList<List<Byte>>();
+		for (List<List<Byte>> list : table.values()) {
+			for (List<Byte> list2 : list) {
+				bytes0.add(list2);
+			}
+		}
+		
+		table = subkeyTable.get(1);
+		List<List<Byte>> bytes1 = new ArrayList<List<Byte>>();
+		for (List<List<Byte>> list : table.values()) {
+			for (List<Byte> list2 : list) {
+				bytes1.add(list2);
+			}
+		}
+		
+		table = subkeyTable.get(2);
+		List<List<Byte>> bytes2 = new ArrayList<List<Byte>>();
+		for (List<List<Byte>> list : table.values()) {
+			for (List<Byte> list2 : list) {
+				bytes2.add(list2);
+			}
+		}
+	}
+	
+}

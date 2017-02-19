@@ -1,0 +1,94 @@
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.security.InvalidKeyException;
+import java.security.InvalidParameterException;
+import java.util.Scanner;
+
+/***
+ * 
+ * @author igMoreira
+ *	Concrete class of the LetterRC4 interface, defines the decrypt operation.
+ *	This is an executable class so holds a main method. This class also implements
+ *	the operationFormula which holds the formula to decrypt in Letter-RC4.
+ */
+public class Decrypt extends LetterRC4{
+
+	/***
+	 * The constructor is redefined to create objects just when the key is
+	 * provided.
+	 * 
+	 * @param key: The key used to encrypt a text
+	 * @throws InvalidKeyException: If the key contains not valid
+	 * characters a exception is thrown and execution interrupted.
+	 */
+	public Decrypt(String key) throws InvalidKeyException {
+		super(key);
+	}
+	
+	/***
+	 * The main method responsible for execute the Encrypt application.
+	 * 
+	 * @param args: Holds the user parameters in the command line.
+	 * 
+	 * @InvalidParameterException: If the user provides the incorrect parameter this exception is thrown
+	 * @RuntimeException: If the plain text file provided does not exist or cannot be openned this exception occurs.
+	 * @IOException: If a cypher text file cannot be created this exception occurs.
+	 * @InvalidKeyException: If the key is not valid this exception occurs.
+	 * @FileNotFoundException: If is not possible to read or write in the file this exception occurs.
+	 */
+	public static void main(String[] args) {
+		
+		if(args.length != 3)
+		{
+			System.out.println("SYNTAX ERROR: Parameters invalid.\n Correct call java Encrypt <key> <ptfile> <ctfile>");
+			System.exit(0);
+		}
+		File cypherTextFile = new File(args[1]);
+		File plainTextFile = new File(args[2]);
+		if (!cypherTextFile.exists() || !cypherTextFile.isFile()) {
+			System.out.println("FILE ERROR: Cypher text file doesn't exist or cannot be accessed.");
+		}
+		if(!plainTextFile.exists() || !plainTextFile.isFile())
+		{
+			try {
+				cypherTextFile.createNewFile();
+			} catch (IOException e) {
+				System.out.println("FILE ERROR: Error trying to create a new file for the plain text, please verify your previleges.");
+			}
+		}
+		LetterRC4 cypher;
+		try {
+			cypher = new Decrypt(args[0]);
+			StringBuilder builder = new StringBuilder();
+			Scanner scan = new Scanner(cypherTextFile);
+			while(scan.hasNextLine())
+			{
+				builder.append(scan.nextLine());
+			}
+			scan.close();
+			String content = builder.toString();
+			PrintWriter out = new PrintWriter(plainTextFile);
+			out.print(cypher.execute(content));
+			out.close();
+			
+		} catch (InvalidKeyException e) {
+			System.out.println(e.getMessage());
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		}
+		
+	}
+	
+	/***
+	 * Implements the abstract method of the LetterRC4 abstract class,
+	 * each operation (encrypt/decrypt) hsa got its own formula to calculate
+	 * a bit.
+	 */
+	@Override
+	protected byte operationFormula(int a, int b) {
+		return (byte) ((a - b + 26) % 26);
+	}
+
+}

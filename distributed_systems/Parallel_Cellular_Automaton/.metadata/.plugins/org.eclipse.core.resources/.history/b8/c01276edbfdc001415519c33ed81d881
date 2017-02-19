@@ -1,0 +1,30 @@
+import edu.rit.pj2.Vbl;
+import edu.rit.pj2.vbl.ByteVbl;
+
+
+public class State implements Vbl{
+
+	ByteVbl[] currentState;
+	
+	public State(ByteVbl[] state) {
+		// TODO Auto-generated constructor stub
+	}
+	
+	@Override
+	public void reduce(Vbl arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void set(Vbl arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+	
+	public Object clone()
+	{
+		return null;
+	}
+
+}

@@ -1,0 +1,86 @@
+import java.lang.reflect.Array;
+import java.math.BigDecimal;
+import java.math.BigInteger;
+import java.util.Arrays;
+import java.util.Collections;
+
+import edu.rit.util.Packing;
+
+public class Ark3 {
+	 private byte[] keyState = new byte[16];
+	 private final int numRounds = 27;
+	 private final int blockSize = 8; // blocks in bytes
+	 
+	 public Ark3(byte[] key) {
+		this.keyState = key;
+	}
+	 
+	 public byte[] execute(byte[] text) {
+		return Ark3Cipher(text); // text is equals the IV for the first round or the cipherText for the next rounds
+	 }
+	 
+	 private byte[] Ark3Cipher(byte[] state)
+	 {
+		for (int i = 0; i < 1; i++) {
+			byte[] subkey = generateSubkey(); // needs to know the input of the subkey generator
+			for (int j = 0; j < subkey.length; j++) {
+				state[j] = (byte) (state[j] ^ subkey[j]);
+			}
+			//state = mix(permutation(state));
+		}
+		return state;
+	 }
+	 
+	 private byte[] generateSubkey()
+	 {
+		 // ROTATE 29 bits right
+		 int[] rotl = new int[4];
+		 Packing.packIntLittleEndian(keyState, 0, rotl, 0, 4);
+		 long test = Packing.packLongLittleEndian(rotl, 1);  //CAUTION NOT SURE IF IT IS RIGHT
+		 Long.rotateRight(test, 29);
+		 
+		 // Divide in 8-bit bytes
+		 Packing.unpackLongLittleEndian(test,rotl, 0);
+		 Packing.unpackIntLittleEndian(rotl, 0, keyState, 0, 4);
+		 
+		 //Feed each of the eight most significant bytes through a different substitution box (S-box) as defined above.
+		 //Permute the eight most significant bytes into a different order as defined above.
+		 byte[] RMS = new byte[8];
+		 System.arraycopy(keyState, 7, RMS, 0, 8);
+		 
+		 
+		 RMS = permutation(RMS); // permuted 8 most right bytes
+		 
+		 //Mix each pair of the eight most significant bytes together by a mix function as defined above.
+		 byte[] subkey = mix(RMS);
+		 
+		 //Add the round number (1 for the first round, 2 for the second round, etc.) to the least significant byte, using addition in the same field GF(28)/f(x) as the S-box.
+		 //Rejoin the bytes into the 128-bit key state.
+		 System.arraycopy(RMS, 0, keyState, 7, 8);
+		 
+		 //The 64 most significant bits of the key state are the subkey.
+		 return subkey;
+	 }
+	 
+	 private byte[] permutation(byte[] state)
+	 {
+		 throw new UnsupportedOperationException("Not implemented yet");
+	 }
+	 
+	 private byte[] mix(byte[] state)
+	 {
+		 throw new UnsupportedOperationException("Not implemented yet");
+	 }
+	 
+	 private byte[] reverse(byte[] array)
+	 {
+		 byte aux;
+		 for (int i = 0; i < array.length/2; i++) {
+				aux = array[i];
+				array[i] = array[(array.length - 1)-i];
+				array[(array.length - 1)-i] = aux;
+		}
+		return array;
+	 }
+	 
+}

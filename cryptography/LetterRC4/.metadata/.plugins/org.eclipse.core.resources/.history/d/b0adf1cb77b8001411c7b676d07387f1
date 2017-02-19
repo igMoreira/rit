@@ -1,0 +1,9 @@
+
+public class Decrypt extends LetterRC4{
+
+	@Override
+	protected byte operationFormula(int a, int b) {
+		return (byte) ((a - b + 26) % 26);
+	}
+
+}

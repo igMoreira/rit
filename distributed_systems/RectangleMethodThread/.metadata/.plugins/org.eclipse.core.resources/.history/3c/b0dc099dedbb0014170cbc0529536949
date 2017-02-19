@@ -1,0 +1,9 @@
+
+public class FunctionTest {
+
+	
+	public double calculate(Integer[] function, Integer startPoint, Integer endPoint)
+	{
+		return 0;
+	}
+}

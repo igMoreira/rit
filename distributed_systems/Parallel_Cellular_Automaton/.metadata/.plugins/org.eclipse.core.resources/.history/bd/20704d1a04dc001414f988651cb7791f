@@ -1,0 +1,8 @@
+
+public class ParallelCellularAutomaton {
+
+	public BitSet calculate()
+	{
+		
+	}
+}

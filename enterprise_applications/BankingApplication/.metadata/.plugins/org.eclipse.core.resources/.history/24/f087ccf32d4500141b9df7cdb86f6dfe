@@ -1,0 +1,10 @@
+package domain.banking.swen.rit;
+
+public class Account {
+	
+	private int accountNumber;
+	private Double balance;
+	
+	
+ 
+}

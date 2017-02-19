@@ -1,0 +1,22 @@
+/**
+ * Provides an interface for communication protocols,
+ * stimulates separation of concerns and the open-closed
+ * principle, resulting in a flexible system.
+ *  
+ * @author igMoreira
+ *
+ */
+public abstract class CommunicationProtocol {
+	
+	/**
+	 * Responsible for sending a request using the
+	 * protocol X
+	 */
+	public abstract void sendRequest();
+	
+	/**
+	 * 
+	 * @return
+	 */
+	public abstract String receiveRequest();
+}

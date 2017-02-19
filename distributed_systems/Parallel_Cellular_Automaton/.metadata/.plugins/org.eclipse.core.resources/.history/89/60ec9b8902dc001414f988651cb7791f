@@ -1,0 +1,35 @@
+import java.util.BitSet;
+
+
+public class Worker {
+	
+	public BitSet calcNextState(BitSet currentState, int[] updateRule, int position)
+	{
+		BitSet copy = (BitSet) currentState.clone();
+		BitSet aux = new BitSet(3);
+		
+		if(position == 0)
+		{
+			// First cell
+			aux.set(0, copy.get(copy.length()-1));
+			aux.set(1, copy.get(position));
+			aux.set(2, copy.get(position+1));
+		}
+		else if( position == (currentState.length()-1))
+		{
+			// last cell
+			aux.set(0, copy.get(position-1));
+			aux.set(1, copy.get(position));
+			aux.set(2, 0);
+		}
+		else
+		{
+			// cell in the middle
+			aux.set(0, copy.get(position-1));
+			aux.set(1, copy.get(position));
+			aux.set(2, 0);
+		}
+		
+		return null;
+	}
+}

@@ -1,0 +1,7 @@
+import java.util.List;
+
+
+public interface RsaAttack {
+
+	public void execute(List<Group> groups);
+}

@@ -1,0 +1,13 @@
+import java.math.BigInteger;
+
+
+public class SharedFactorAttack {
+
+	public static BigInteger computePrivateKey(BigInteger modulusAlex, BigInteger encryptionExponentAlex, BigInteger modulusBlake)
+	{
+		BigInteger p = modulusAlex.gcd(modulusBlake);
+		BigInteger q = modulusAlex.divide(p);
+		BigInteger aux = encryptionExponent.modInverse(eulerTotient(p, q));
+		return null;
+	}
+}

@@ -1,0 +1,39 @@
+import java.io.OutputStream;
+import java.io.PrintWriter;
+
+
+public class SenderThread extends Thread{
+	
+	private PrintWriter out;
+	private String request = null;
+	
+	public SenderThread(OutputStream out) {
+		this.out = new PrintWriter(out);
+	}
+	
+	@Override
+	public void run() {
+		while(true)
+		{
+			System.out.println("A");
+			if(request != null)
+			{
+				out.println(request);
+				out.flush();
+				request = null;
+			}
+			try {
+				wait(100);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+			
+		}
+	}
+	
+	public void sendRequest(String request)
+	{
+		this.request = request;
+	}
+
+}

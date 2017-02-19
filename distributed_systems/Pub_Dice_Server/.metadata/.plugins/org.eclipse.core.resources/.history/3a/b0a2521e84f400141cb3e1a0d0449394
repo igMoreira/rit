@@ -1,0 +1,48 @@
+import java.io.IOException;
+import java.net.DatagramPacket;
+import java.net.DatagramSocket;
+import java.net.InetAddress;
+
+
+public class UdpSender extends SenderThread {
+	private DatagramSocket server;
+	private byte[] sendData = null;
+	private int port = 0;
+	private InetAddress IPAddress = null;
+	
+	public UdpSender(DatagramSocket server) {
+		this.server = server;
+	}
+	
+	@Override
+	public void sendMessage(String message, int port, InetAddress IPAddress) {
+		this.port = port;
+		this.IPAddress = IPAddress;
+		this.sendData = message.getBytes();
+	}
+	
+	@Override
+	public void run() {
+		while(true)
+		{
+			if(sendData != null)
+			{
+				DatagramPacket sendPacket = new DatagramPacket(sendData, sendData.length, IPAddress, port);
+				try {
+					server.send(sendPacket);
+				} catch (IOException e) {
+					System.out.println("NETWORK ERROR: Error trying to send packet");
+					e.printStackTrace();
+					System.exit(0);
+				}
+				sendData = null;
+				port = 0;
+				IPAddress = null;
+			}
+		}
+	}
+
+	@Override
+	public void sendMessage(String message) {
+	}
+}

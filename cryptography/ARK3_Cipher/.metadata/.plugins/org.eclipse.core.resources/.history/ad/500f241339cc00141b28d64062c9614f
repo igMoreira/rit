@@ -1,0 +1,48 @@
+
+
+public class Ark3 {
+	 private byte[] key = new byte[7];
+	 private final int numRounds = 27;
+	 private final int blockSize = 8; // blocks in bytes
+	 
+	 public Ark3(byte[] key) {
+		this.key = key;
+	}
+	 
+	 public byte[] execute(byte[] text) {
+		/*byte[] output = new byte[text.length];
+		byte[] state = {0,0,0,0,0,0,0,0};
+		for (int i = 7; (i < text.length); i+=7) {
+			if( i <= text.length )
+			{
+				System.arraycopy(text, i-7, state, 0, blockSize);
+			}
+			else
+			{
+				System.arraycopy(text, i-7, state, 0, text.length - (i-7));
+			}
+			System.arraycopy(Ark3Cipher(state), 0, output, i-7, blockSize);
+		}*/
+		return Ark3Cipher(text); // text is equals the IV for the first round or the cipherText for the next rounds
+	 }
+	 
+	 private byte[] Ark3Cipher(byte[] state)
+	 {
+		for (int i = 0; i < 27; i++) {
+			byte[] subkey = generateSubkey(); // needs to know the input of the subkey generator
+			
+		}
+		return state;
+	 }
+	 
+	 private byte[] generateSubkey()
+	 {
+		 throw new UnsupportedOperationException("Not implemented yet");
+	 }
+	 
+	 private byte[] permutation(byte[] state)
+	 {
+		 throw new UnsupportedOperationException("Not implemented yet");
+	 }
+	 
+}

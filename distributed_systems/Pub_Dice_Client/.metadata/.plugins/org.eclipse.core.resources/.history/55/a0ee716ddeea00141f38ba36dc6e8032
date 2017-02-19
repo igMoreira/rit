@@ -1,0 +1,12 @@
+import java.io.IOException;
+
+
+public interface PubDiceServices {
+	
+	public String[] join(String playerName) throws IOException;
+	public String[] turnTile(int x, boolean up) throws IOException;
+	public String[] endTurn();
+	public String[] rollDie();
+	public String[] quit();
+	public String[] waitNextTurn();
+}

@@ -1,0 +1,11 @@
+package cipher_core;
+
+public class TestCon extends TestAb{
+
+	@Override
+	private void test() {
+		// TODO Auto-generated method stub
+		
+	}
+
+}

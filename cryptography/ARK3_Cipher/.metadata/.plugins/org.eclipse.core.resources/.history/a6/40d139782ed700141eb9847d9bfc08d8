@@ -1,0 +1,36 @@
+/***
+ * Defines an interface for Block Cipher Operation Modes
+ * @author igMoreira
+ *
+ */
+public abstract class OperationMode {
+	protected BlockCipher cipher; // Cipher to be used in the Operation Mode
+	
+	/***
+	 * Constructor
+	 * @param cipher: Block cipher to be used in the operation mode
+	 */
+	public OperationMode(BlockCipher cipher) {
+		this.cipher = cipher;
+	}
+	
+	/***
+	 * Execution method of the Block Cipher Operation Mode
+	 * in a encrypt operation.
+	 * That is what the user needs to call.
+	 * @param text: Plain text to be used
+	 * @param IV: Initialization vector to be used in the operation mode
+	 * @return: The cipher text
+	 */
+	public abstract byte[] encrypt(int text);
+	
+	/***
+	 * Execution method of the Block Cipher Operation Mode
+	 * in a decrypt operation.
+	 * That is what the user needs to call.
+	 * @param text: Cipher text to be used
+	 * @param IV: Initialization vector to be used in the operation mode
+	 * @return: The plain text
+	 */
+	public abstract byte[] decrypt(byte[] text, byte[] IV);
+}

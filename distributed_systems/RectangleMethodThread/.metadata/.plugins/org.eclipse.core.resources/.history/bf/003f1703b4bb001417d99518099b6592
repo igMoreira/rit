@@ -1,0 +1,91 @@
+import java.security.InvalidParameterException;
+import java.util.Arrays;
+
+
+/***
+ * 
+ * @author igMoreira
+ *	Will provide the user an executable application, will be responsible
+ *	for get the user input and validate it.
+ */
+public class ComputeArea {
+
+	/***
+	 * Executable method
+	 * @param args: The user input passed through the command line.
+	 * @InvalidParameterException: If the parameters provided by the user are incorrect this execeptionis thrown
+	 * 
+	 */
+	public static void main(String[] args) {
+		if(args.length < 5)
+		{
+			throw new InvalidParameterException("SYNTAX ERROR: The correct syntax is: "
+					+ "ComputeArea <threads> <intervals> <start> <end> <function>");
+		}
+		validateThreadArgument(args[0]);
+		validateIntervalsArgument(args[1]);
+		validatePointsArgument(args[2], args[3]);
+		validateFunctionArguments(Arrays.copyOfRange(args, 4, args.length));
+	}
+	
+	/***
+	 * Validates the Thread parameter provided by the user.
+	 * This parameter is valid only if is a number greater than 0.
+	 * 
+	 * @return: The value of the Thread parameter in integer type.
+	 * @throw InvalidParameterException: If the parameter is invalid an exception is thrown
+	 */
+	private static Integer validateThreadArgument(String threadParameter)
+	{
+		Integer val = Integer.parseInt(threadParameter);
+		if(val <= 0)
+			throw new InvalidParameterException("PARAMETER ERROR: The thread number must be greater than zerol");
+		return val;
+	}
+	
+	/***
+	 * Vaidates the Intervals parameter provided by the user.
+	 * This parameter is valid only if is a number greater than 0.
+	 * 
+	 * @return: The value of the intevals parameter in Integer type
+	 * @throw InvalidParameterException: If the parameter is invalid an exception is thrown
+	 */
+	private static Integer validateIntervalsArgument(String intervalParameter)
+	{
+		Integer val = Integer.parseInt(intervalParameter);
+		if(val <= 0)
+			throw new InvalidParameterException("PARAMETER ERROR: The interval number must be greater than zerol");
+		return val;
+	}
+	
+	/***
+	 * Validates the points provided by the user to calculate the area.
+	 * This parameters are valid only if the starting point is smaller than the end point,
+	 * and both are numbers.
+	 * 
+	 * @return: An array of integer containing the points A and B
+	 * @throw InvalidParameterException: If the parameter is invalid an exception is thrown
+	 */
+	private static Integer[] validatePointsArgument(String a, String b)
+	{
+		Integer points[] = {Integer.parseInt(a),Integer.parseInt(b)};
+		if(points[1] < points[0])
+			throw new InvalidParameterException("PARAMETER ERROR: Point B cannot be smaller than point A.");
+		return points;
+	}
+	
+	/***
+	 * Validates if a function provided by the user is valid.
+	 * A function is valid if contains only numbers.
+	 * @return: An array of integers containing the values of the function arguments
+	 */
+	private static Integer[] validateFunctionArguments(String[] function)
+	{
+		Integer functionValues[] = new Integer[function.length];
+		for (int i=0; i< function.length; i++) {
+			functionValues[i] = Integer.parseInt(function[i]);
+		}
+		return functionValues;
+	}
+
+}

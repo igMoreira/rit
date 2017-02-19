@@ -1,0 +1,83 @@
+/**
+ * A PubDice player, basically
+ * a old-fashion Bean class
+ * 
+ * @author igMoreira
+ *
+ */
+public class Player {
+	private String name;
+	private int number;
+	private int score;
+	private boolean turn = false;
+	
+	
+	/**
+	 * Verifies if its this player turn
+	 * @return: true if its the turn false otherwise
+	 */
+	public boolean isTurn() {
+		return turn;
+	}
+	
+	/**
+	 * Sets the turn of the player
+	 * 
+	 * @param turn: boolean turn, true if it the player's turn false otherwise
+	 */
+	public void setTurn(boolean turn) {
+		this.turn = turn;
+	}
+	
+	/**
+	 * Gets the player score
+	 * @return: integer representing the player's score
+	 */
+	public int getScore() {
+		return score;
+	}
+	
+	/**
+	 * Sets the player score
+	 * @param score: integer representing the player's score
+	 */
+	public void setScore(int score) {
+		this.score = score;
+	}
+	
+	/**
+	 * Gets the player name
+	 * @return: String representing the player's name
+	 */
+	public String getName() {
+		return name;
+	}
+	
+	/**
+	 * Sets the player name
+	 * @param name: String representing the player's name
+	 */
+	public void setName(String name) {
+		this.name = name;
+	}
+	
+	/**
+	 * Gets the player number.
+	 * 1 for player one / 2 for player two
+	 * @return: integer representing the player's number
+	 */
+	public int getNumber() {
+		return number;
+	}
+	
+	/**
+	 * Sets the player number.
+	 * 1 for player one / 2 for player two
+	 * @param number: integer representing the player's number
+	 */
+	public void setNumber(int number) {
+		this.number = number;
+	}
+	
+	
+}

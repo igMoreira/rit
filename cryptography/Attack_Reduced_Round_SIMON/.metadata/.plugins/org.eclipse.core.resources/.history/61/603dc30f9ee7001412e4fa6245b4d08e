@@ -1,0 +1,264 @@
+import java.util.BitSet;
+
+/**
+ * Do a meet-in-the-middle attack on two-round PRESENT.
+ */
+public class MitmAttack01
+   {
+   // S-box.
+   private static final int[] Sbox = new int[]
+      { 12, 5, 6, 11, 9, 0, 10, 13, 3, 14, 15, 8, 4, 7, 1, 2 };
+
+   // Inverse S-box.
+   private static final int[] inverseSbox = new int[]
+      { 5, 14, 15, 8, 12, 1, 2, 13, 11, 4, 6, 3, 0, 7, 9, 10 };
+
+   // Bit permutation.
+   private static final int[] permute = new int[]
+      {  0, 16, 32, 48,  1, 17, 33, 49,  2, 18, 34, 50,  3, 19, 35, 51,
+         4, 20, 36, 52,  5, 21, 37, 53,  6, 22, 38, 54,  7, 23, 39, 55,
+         8, 24, 40, 56,  9, 25, 41, 57, 10, 26, 42, 58, 11, 27, 43, 59,
+        12, 28, 44, 60, 13, 29, 45, 61, 14, 30, 46, 62, 15, 31, 47, 63 };
+
+   // Helper class to store the results of a bottom-up decryption. For a
+   // certain round-2 S-box, and given a certain ciphertext, it maps a value at
+   // Point A to the set of possible round-1 and round-2 subkeys for that
+   // value.
+   private static class BottomUpResults
+      {
+      private BitSet[] results;
+      private int shift_a;
+      private int shift_b;
+      private int shift_c;
+      private int shift_d;
+
+      // Construct a new bottom-up results object for round-2 S-box j
+      // (j = 0..15).
+      public BottomUpResults
+         (int j)
+         {
+         results = new BitSet [16];
+         for (int i = 0; i <= 15; ++ i)
+            results[i] = new BitSet (256);
+         shift_a = permute[4*j  ];
+         shift_b = permute[4*j+1] - 1;
+         shift_c = permute[4*j+2] - 2;
+         shift_d = permute[4*j+3] - 3;
+         }
+
+      // Do a bottom-up decryption with the given ciphertext and store the
+      // results.
+      public void decrypt
+         (long ciphertext)
+         {
+         // Clear results.
+         for (int i = 0; i <= 15; ++ i)
+            results[i].clear();
+
+         // Collect the relevant ciphertext bits.
+         int ct = (int)
+            (((ciphertext >> shift_a) & 1) |
+             ((ciphertext >> shift_b) & 2) |
+             ((ciphertext >> shift_c) & 4) |
+             ((ciphertext >> shift_d) & 8));
+
+         // Try each possible round-1 and round-2 subkey and record results.
+         for (int subkey = 0; subkey <= 255; ++ subkey)
+            {
+            int subkey_1 = subkey >> 4;
+            int subkey_2 = subkey & 15;
+            int stateAtPointA = inverseSbox[ct ^ subkey_2] ^ subkey_1;
+            results[stateAtPointA].set (subkey);
+            }
+         }
+
+      // Returns the set of possible round-1 and round-2 subkeys for the given
+      // state at Point A.
+      public BitSet possibleSubkeys
+         (int stateAtPointA)
+         {
+         return results[stateAtPointA];
+         }
+      }
+
+   // Main program.
+   public static void main
+      (String[] args)
+      {
+      // Parse command line arguments.
+      if (args.length != 1) usage();
+      long seed = Long.parseLong (args[0]);
+
+      // Create oracle.
+      Oracle01 oracle = new Oracle01 (2, seed);
+
+      // Create bottom-up results objects for round-2 S-boxes 0, 4, 8, 12.
+      BottomUpResults bottomUp_0 = new BottomUpResults (0);
+      BottomUpResults bottomUp_4 = new BottomUpResults (4);
+      BottomUpResults bottomUp_8 = new BottomUpResults (8);
+      BottomUpResults bottomUp_12 = new BottomUpResults (12);
+
+      // Each of the following arrays maps a round-0 subkey to the set of
+      // possible round-1 and round-2 subkeys for round-2 S-boxes 0, 4, 8, 12.
+      // Initially, all subkeys are possible.
+      BitSet[] possibleSubkeys_0 = new BitSet [65536];
+      BitSet[] possibleSubkeys_4 = new BitSet [65536];
+      BitSet[] possibleSubkeys_8 = new BitSet [65536];
+      BitSet[] possibleSubkeys_12 = new BitSet [65536];
+      for (int i = 0; i <= 65535; ++ i)
+         {
+         possibleSubkeys_0[i] = new BitSet (256);
+         possibleSubkeys_4[i] = new BitSet (256);
+         possibleSubkeys_8[i] = new BitSet (256);
+         possibleSubkeys_12[i] = new BitSet (256);
+
+         possibleSubkeys_0[i].set (0, 256);
+         possibleSubkeys_4[i].set (0, 256);
+         possibleSubkeys_8[i].set (0, 256);
+         possibleSubkeys_12[i].set (0, 256);
+         }
+
+      // Counters for the number of possible round-0 subkeys for round-2
+      // S-boxes 0, 4, 8, 12.
+      int possibleCount_0 = Integer.MAX_VALUE;
+      int possibleCount_4 = Integer.MAX_VALUE;
+      int possibleCount_8 = Integer.MAX_VALUE;
+      int possibleCount_12 = Integer.MAX_VALUE;
+
+      // Process plaintext-ciphertext pairs until only one possible subkey
+      // remains. Count pairs.
+      int pairCount = 0;
+      System.out.printf ("N     Plaintext           Ciphertext          # subkeys%n");
+      while (possibleCount_0 > 1 || possibleCount_4 > 1 ||
+            possibleCount_8 > 1 || possibleCount_12 > 1)
+         {
+         // Get plaintext/ciphertext pair from oracle.
+         PtCt ptct = oracle.next();
+         long plaintext = ptct.pt;
+         long ciphertext = ptct.ct;
+         ++ pairCount;
+
+         // Decrypt ciphertext bottom-up to Point A.
+         bottomUp_0.decrypt (ciphertext);
+         bottomUp_4.decrypt (ciphertext);
+         bottomUp_8.decrypt (ciphertext);
+         bottomUp_12.decrypt (ciphertext);
+
+         // Consider all possible round-0 subkeys.
+         possibleCount_0 = 0;
+         possibleCount_4 = 0;
+         possibleCount_8 = 0;
+         possibleCount_12 = 0;
+         for (int subkey_0 = 0; subkey_0 <= 65535; ++ subkey_0)
+            {
+            if (possibleSubkeys_0[subkey_0] == null) continue;
+
+            // Encrypt plaintext top-down to Point A.
+            long state = plaintext ^ (long)subkey_0;
+            int state_a = Sbox[(int)((state      ) & 15)];
+            int state_b = Sbox[(int)((state >>  4) & 15)];
+            int state_c = Sbox[(int)((state >>  8) & 15)];
+            int state_d = Sbox[(int)((state >> 12) & 15)];
+            int state_0 =
+               ((state_a & 1)     ) |
+               ((state_b & 1) << 1) |
+               ((state_c & 1) << 2) |
+               ((state_d & 1) << 3);
+            int state_4 =
+               ((state_a & 2) >> 1) |
+               ((state_b & 2)     ) |
+               ((state_c & 2) << 1) |
+               ((state_d & 2) << 2);
+            int state_8 =
+               ((state_a & 4) >> 2) |
+               ((state_b & 4) >> 1) |
+               ((state_c & 4)     ) |
+               ((state_d & 4) << 1);
+            int state_12 =
+               ((state_a & 8) >> 3) |
+               ((state_b & 8) >> 2) |
+               ((state_c & 8) >> 1) |
+               ((state_d & 8)     );
+
+            // Keep only those round-1 and round-2 subkeys that meet in the
+            // middle with this round-0 subkey.
+            possibleSubkeys_0[subkey_0].and
+               (bottomUp_0.possibleSubkeys (state_0));
+            possibleSubkeys_4[subkey_0].and
+               (bottomUp_4.possibleSubkeys (state_4));
+            possibleSubkeys_8[subkey_0].and
+               (bottomUp_8.possibleSubkeys (state_8));
+            possibleSubkeys_12[subkey_0].and
+               (bottomUp_12.possibleSubkeys (state_12));
+
+            // Keep this round-0 subkey if there is at least one possible
+            // round-1 and round-2 subkey for all four S-boxes, otherwise
+            // eliminate this round-0 subkey.
+            int n_0 = possibleSubkeys_0[subkey_0].cardinality();
+            int n_4 = possibleSubkeys_4[subkey_0].cardinality();
+            int n_8 = possibleSubkeys_8[subkey_0].cardinality();
+            int n_12 = possibleSubkeys_12[subkey_0].cardinality();
+            if (n_0 > 0 && n_4 > 0 && n_8 > 0 && n_12 > 0)
+               {
+               possibleCount_0 += n_0;
+               possibleCount_4 += n_4;
+               possibleCount_8 += n_8;
+               possibleCount_12 += n_12;
+               }
+            else
+               {
+               possibleSubkeys_0[subkey_0] = null;
+               possibleSubkeys_4[subkey_0] = null;
+               possibleSubkeys_8[subkey_0] = null;
+               possibleSubkeys_12[subkey_0] = null;
+               }
+            }
+
+         System.out.printf ("%-4d  %016X    %016X    %d  %d  %d  %d%n",
+            pairCount, plaintext, ciphertext,
+            possibleCount_12, possibleCount_8,
+            possibleCount_4, possibleCount_0);
+         }
+
+      // Print subkeys.
+      int ka = 0;
+      while (possibleSubkeys_0[ka] == null) ++ ka;
+      int kb_0 = possibleSubkeys_0[ka].nextSetBit (0);
+      int kb_4 = possibleSubkeys_4[ka].nextSetBit (0);
+      int kb_8 = possibleSubkeys_8[ka].nextSetBit (0);
+      int kb_12 = possibleSubkeys_12[ka].nextSetBit (0);
+      System.out.printf
+         ("Subkey 0 = ................................................%d%d%d%d%d%d%d%d%d%d%d%d%d%d%d%d%n",
+          (ka >> 15) & 1, (ka >> 14) & 1, (ka >> 13) & 1, (ka >> 12) & 1,
+          (ka >> 11) & 1, (ka >> 10) & 1, (ka >>  9) & 1, (ka >>  8) & 1,
+          (ka >>  7) & 1, (ka >>  6) & 1, (ka >>  5) & 1, (ka >>  4) & 1,
+          (ka >>  3) & 1, (ka >>  2) & 1, (ka >>  1) & 1, (ka      ) & 1);
+      System.out.printf
+         ("Subkey 1 = ............%d%d%d%d............%d%d%d%d............%d%d%d%d............%d%d%d%d%n",
+          (kb_12 >> 7) & 1, (kb_12 >> 6) & 1,
+          (kb_12 >> 5) & 1, (kb_12 >> 4) & 1, 
+          (kb_8  >> 7) & 1, (kb_8  >> 6) & 1,
+          (kb_8  >> 5) & 1, (kb_8  >> 4) & 1, 
+          (kb_4  >> 7) & 1, (kb_4  >> 6) & 1,
+          (kb_4  >> 5) & 1, (kb_4  >> 4) & 1, 
+          (kb_0  >> 7) & 1, (kb_0  >> 6) & 1,
+          (kb_0  >> 5) & 1, (kb_0  >> 4) & 1);
+      System.out.printf
+         ("Subkey 2 = ...%d...%d...%d...%d...%d...%d...%d...%d...%d...%d...%d...%d...%d...%d...%d...%d%n",
+          (kb_12 >> 3) & 1, (kb_8  >> 3) & 1,
+          (kb_4  >> 3) & 1, (kb_0  >> 3) & 1,
+          (kb_12 >> 2) & 1, (kb_8  >> 2) & 1,
+          (kb_4  >> 2) & 1, (kb_0  >> 2) & 1,
+          (kb_12 >> 1) & 1, (kb_8  >> 1) & 1,
+          (kb_4  >> 1) & 1, (kb_0  >> 1) & 1,
+          (kb_12     ) & 1, (kb_8      ) & 1,
+          (kb_4      ) & 1, (kb_0      ) & 1);
+      }
+
+   private static void usage()
+      {
+      System.err.println ("Usage: java MitmAttack01 <seed>");
+      System.err.println ("<seed> = Random seed");
+      System.exit (1);
+      }
+   }

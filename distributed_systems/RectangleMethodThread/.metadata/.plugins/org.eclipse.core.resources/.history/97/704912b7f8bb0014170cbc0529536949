@@ -1,0 +1,38 @@
+
+public class FunctionTest {
+
+	
+	public double calculate(Integer[] function, Double startPoint, Double endPoint)
+	{
+		int numThreads = 4;
+		int numIntervals = 1;
+		double lengthThreadDivision = (endPoint-startPoint)/numThreads;
+		
+		
+		return 0;
+	}
+	
+	private double threadCalculation(Integer[] function, Double startPoint, Double endPoint, int numIntervals)
+	{
+		Double squareLength = (endPoint-startPoint)/numIntervals;
+		Double squareHeigth = 0D;
+		for (int i = 0; i < numIntervals; i++) {
+			startPoint = startPoint + (squareLength*i);
+			squareHeigth = calculateFunction(function, startPoint);
+		}
+		return 0D;
+	}
+	
+	private double calculateFunction(Integer[] function, Double x)
+	{
+		double result = 0D;
+		Integer[] expoents = new Integer[function.length];
+		for (int i = 0; i < function.length; i++) {
+			expoents[i] = Math.abs(i-function.length-1);
+		}
+		for (int i = 0; i < function.length; i++) {
+			result += function[i] * (Math.pow(x, expoents[i]));
+		}
+		return result;
+	}
+}

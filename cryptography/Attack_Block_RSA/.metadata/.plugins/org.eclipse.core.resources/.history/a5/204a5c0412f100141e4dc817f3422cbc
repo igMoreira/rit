@@ -1,0 +1,10 @@
+import java.math.BigInteger;
+
+
+public class SharedFactorAttack {
+
+	public static BigInteger computePrivateKey(BigInteger modulusA, BigInteger modulusB)
+	{
+		return null;
+	}
+}

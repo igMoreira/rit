@@ -1,0 +1,36 @@
+package domain.banking.swen.rit;
+
+import java.sql.Date;
+
+public class Transaction {
+
+	private Date date;
+	private String operation;
+	private Integer accountNumber;
+	private Double operationCost;
+	
+	public Transaction() {
+		
+	}
+	
+	public Integer getAccountNumber() {
+		return accountNumber;
+	}
+	
+	public Date getDate() {
+		return date;
+	}
+	
+	public String getOperation() {
+		return operation;
+	}
+	
+	public Double getOperationCost() {
+		return operationCost;
+	}
+	
+	public void save(Transaction transaction)
+	{
+		
+	}
+}

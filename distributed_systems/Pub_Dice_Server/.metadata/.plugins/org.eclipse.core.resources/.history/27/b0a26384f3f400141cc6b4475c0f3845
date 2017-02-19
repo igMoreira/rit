@@ -1,0 +1,54 @@
+import java.net.InetAddress;
+
+
+public class messageController extends Thread{
+	private String message;
+	private int port;
+	private InetAddress IPAddress;
+	
+	public messageController(String message, int port, InetAddress IPAddress) {
+		this.message = message;
+		this.port = port;
+		this.IPAddress = IPAddress;
+	}
+	
+	private void processRequest()
+	{
+		String[] interpretedmessage = message.split(" ");
+		String command = interpretedmessage[0];
+		/*switch(command)
+		{
+			case "quit":
+				ServerProxy s = new ServerProxy();
+				s.closeConnection();
+				System.exit(0);
+				break;
+			case "score":
+				scoreUpdate(interpretedmessage);
+				break;
+			case "tile":
+				tileUpdate(interpretedmessage);
+				break;
+			case "dice":
+				diceUpdate(interpretedmessage);
+				break;
+			case "joined":
+				playersUpdate(interpretedmessage);
+				break;
+			case "turn":
+				turnUpdate(interpretedmessage);
+				break;
+			case "win":
+				winUpdate(interpretedmessage);
+				break;
+			default:
+				System.out.println("Invalid server command "+message);
+		}*/
+	}
+	
+	@Override
+	public void run() {
+		processRequest();
+	}
+	
+}

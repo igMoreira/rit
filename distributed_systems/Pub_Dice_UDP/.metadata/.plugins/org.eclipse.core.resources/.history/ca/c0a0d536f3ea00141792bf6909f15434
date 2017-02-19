@@ -1,0 +1,95 @@
+import java.util.List;
+
+
+public class ResponseHandler implements Observer{
+	private static Player realPlayer;
+	private static Player virtualPlayer;
+	private static PubDiceUI view;
+	
+	public ResponseHandler(String playerName, PubDiceUI gui) {
+		realPlayer = new Player();
+		virtualPlayer = new Player();
+		view = gui;
+		realPlayer.setName(playerName);
+	}
+	
+	private void processRequest(List<String> response)
+	{
+		for (String r : response) {
+			String[] interpretedResponse = r.split(" ");
+			String command = interpretedResponse[0];
+			switch(command)
+			{
+				case "quit": 
+					System.exit(0);
+					break;
+				case "score":
+					scoreUpdate(interpretedResponse);
+					break;
+				case "tile":
+					break;
+				case "dice":
+					break;
+				case "joined":
+					playersUpdate(interpretedResponse);
+					break;
+				case "turn":
+					turnUpdate(interpretedResponse);
+					break;
+				case "win":
+					break;
+			}
+		}
+	}
+	
+	private void scoreUpdate(String[] scoreInfo)
+	{
+		int playerNumber = Integer.parseInt(scoreInfo[1]);
+		int score = Integer.parseInt(scoreInfo[2]);
+		if(realPlayer.getNumber() == playerNumber)
+		{
+			realPlayer.setScore(score);
+			if(playerNumber == 1)
+				view.setMessage(""+realPlayer.getName()+" "+ realPlayer.getScore() +" -- "+virtualPlayer.getName());
+		}
+		else
+			virtualPlayer.setScore(score);
+	}
+	
+	private void playersUpdate(String[] playersInfo)
+	{
+		if(!realPlayer.getName().equalsIgnoreCase(playersInfo[1]))
+			virtualPlayer.setName(playersInfo[1]);
+		else
+			virtualPlayer.setName(playersInfo[2]);
+		realPlayer.setNumber(Integer.parseInt(playersInfo[3]));
+		if( (realPlayer.getNumber() == 1) )
+		{
+			virtualPlayer.setNumber( 2 );
+			view.setMessage(""+realPlayer.getName()+" -- "+virtualPlayer.getName());
+		}
+		else
+		{
+			virtualPlayer.setNumber( 1 );
+			view.setMessage(""+virtualPlayer.getName()+" -- "+realPlayer.getName());
+		}
+	}
+	
+	private void turnUpdate(String[] turnInfo)
+	{
+		int turn = Integer.parseInt(turnInfo[1]);
+		if(turn == realPlayer.getNumber())
+			view.enableButtons(true);
+	}
+	
+	private void winUpdate()
+	{
+		
+	}
+	
+	@Override
+	public void update(List<String> response) {
+		processRequest(response);
+	}
+
+}

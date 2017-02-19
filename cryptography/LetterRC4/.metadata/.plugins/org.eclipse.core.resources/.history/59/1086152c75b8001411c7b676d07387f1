@@ -1,0 +1,109 @@
+
+
+import java.nio.charset.Charset;
+
+public abstract class LetterRC4 implements StreamCipher{
+
+	private byte[] key = new byte[26];
+	private byte[] keyStream;
+	
+	protected abstract operationFormula();
+	
+	@Override
+	public void setKey(String key) {
+		if(key.length() <= 26 || key.length() >=0)
+		{
+			for (int i = 0; i < this.key.length; i++) {
+				key = key.toUpperCase();
+				char aux = key.charAt(i);
+				this.key[i] = (byte) (aux - 0x41);
+			}
+		}
+		else
+		{
+			System.out.println("KEY LENGTH ERROR");
+		}
+	}
+	
+	@Override
+	public String encrypt(String plainText) {
+		plainText = plainText.toUpperCase();
+		byte[] y = plainText.getBytes(Charset.forName("UTF-8"));
+		plainText = null;
+		byte[] x = RC4(y, true);
+		StringBuilder res = new StringBuilder();
+		for (int i = 0; i < x.length; i++) {
+			res.append((char)(x[i]+65));
+		}
+		return res.toString();
+	}
+
+	@Override
+	public String decrypt(String cipherText) {
+		cipherText = cipherText.toUpperCase();
+		byte[] y = cipherText.getBytes(Charset.forName("UTF-8"));
+		cipherText = null;
+		byte[] x = RC4(y, false);
+		StringBuilder res = new StringBuilder();
+		for (int i = 0; i < x.length; i++) {
+			res.append((char)(x[i]+65));
+		}
+		return res.toString();
+	}
+	
+	private byte[] RC4(byte[] text, boolean encrypt)
+	{
+		byte[] tmp = validateText(text);
+		byte[] x = new byte[tmp.length];
+		text = null;
+		generateKeyStream(tmp.length);
+		for (int i = 0; i < tmp.length; i++) {
+			int a = (tmp[i]-0x41);
+			int b = (keyStream[i]);
+			x[i] =  (encrypt) ? (byte) ((a + b ) % 26) : (byte) ((a - b + 26) % 26);
+		}
+		return x;
+	}
+	
+	private void generateKeyStream(int textLength){
+		if(key.length <= 26 || key.length >=0)
+		{
+			int i = 0;
+			int j = 0;
+			byte aux;
+			byte[] S = new byte[key.length];
+			keyStream = new byte[textLength];
+
+			for (int k = 0; k < 26; k++) {
+				S[k] = (byte) (key[k % key.length]);
+			}
+
+			for (int counter = 0; counter < textLength; counter++) {
+				i = (i+1)% 26;
+				j = (j+S[i])% 26;
+				aux = S[i];
+				S[i] = S[j];
+				S[j] = aux;
+				keyStream[counter] = S[(S[i]+S[j]) % 26];
+			}
+		}
+		else
+		{
+			System.out.println("KEY LENGTH ERROR");
+		}
+	}
+	
+	private byte[] validateText(byte[] text)
+	{
+		StringBuilder temp = new StringBuilder();
+		for (int i = 0; i < text.length; i++) {
+			if( (text[i] >= 0x41 && text[i] <= 0x5A) || (text[i] >= 0x61 && text[i] <= 0x7A))
+			{
+				temp.append((char)text[i]);
+			}
+		}
+		text = null;
+		return temp.toString().getBytes();
+	}
+
+}

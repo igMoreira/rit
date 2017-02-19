@@ -1,0 +1,10 @@
+
+public class CrackSimon {
+
+	public static void main(String[] args) {
+		byte[] sub1 = new byte[3];
+		byte[] sub2 = new byte[3];
+		byte[] sub3 = new byte[3];
+	}
+
+}

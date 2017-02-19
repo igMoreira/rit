@@ -1,0 +1,23 @@
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.util.ArrayList;
+import java.util.List;
+
+
+public class RsaDecrypt {
+
+	public static void main(String[] args) {
+		BufferedReader in = null;
+		try {
+			FileReader file = new FileReader(args[0]);
+			in = new BufferedReader(file);
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		List<Group> groups = new ArrayList<Group>();
+//		while()
+	}
+	
+}

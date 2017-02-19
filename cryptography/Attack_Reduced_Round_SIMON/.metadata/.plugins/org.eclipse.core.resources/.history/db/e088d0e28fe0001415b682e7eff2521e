@@ -1,0 +1,46 @@
+
+import edu.rit.util.Packing;
+
+
+
+public class SimonTest {
+
+	public byte[] test(byte[] subkey, byte[] plainText)
+	{
+		byte[] pt1 = new byte[4];
+		byte[] pt2 = new byte[4];
+		System.arraycopy(plainText, 0, pt1, 1, 3);
+		System.arraycopy(plainText, 3, pt2, 1, 3);
+		int packedPt1 = 0;
+		packedPt1 = Packing.packIntBigEndian(pt1, 0);
+		
+		int rotate1 = (packedPt1 << 1) | (packedPt1 >>> (24 - 1));
+		int rotate2 = (packedPt1 << 8) | (packedPt1 >>> (24 - 8));
+		int rotate3 = (packedPt1 << 2) | (packedPt1 >>> (24 - 2));
+
+		int result = (rotate1 & rotate2);
+		byte[] unpacked = new byte[4];
+		
+		Packing.unpackIntBigEndian(result, unpacked, 0);
+		
+		for (int i = 0; i < 4; i++) {
+			pt2[i] = (byte) ((pt2[i] ^ unpacked[i]));
+		}
+		
+		Packing.unpackIntBigEndian(rotate3, unpacked, 0);
+		for (int i = 0; i < 4; i++) {
+			pt2[i] = (byte) ((pt2[i] ^ unpacked[i]));
+		}
+		
+		for (int i = 0; i < 3; i++) {
+			pt2[i+1] = (byte) ((pt2[i+1] ^ subkey[i]));
+		}
+		
+		
+		byte[] aux = new byte[6];
+		
+		System.arraycopy(pt1, 1, aux, 3, 3);
+		System.arraycopy(pt2, 1, aux, 0, 3);
+		return aux;
+	}
+}

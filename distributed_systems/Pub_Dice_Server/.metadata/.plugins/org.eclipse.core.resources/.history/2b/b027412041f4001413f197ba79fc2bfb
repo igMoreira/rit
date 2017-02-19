@@ -1,0 +1,23 @@
+import java.net.DatagramSocket;
+import java.net.SocketException;
+
+
+public class Udp extends CommunicationProtocol{
+	
+	public Udp(int port) {
+		DatagramSocket server;
+		try {
+			this.server = new DatagramSocket(port);
+		} catch (SocketException e) {
+			System.out.println("SOCKET ERROR: Error trying to open socket port");
+			e.printStackTrace();
+			System.exit(0);
+		}
+	}
+	
+	@Override
+	public void sendRequest(String request) {
+		// TODO Auto-generated method stub
+	}
+
+}

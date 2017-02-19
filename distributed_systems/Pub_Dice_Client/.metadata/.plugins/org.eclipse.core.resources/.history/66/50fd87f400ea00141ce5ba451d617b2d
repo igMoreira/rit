@@ -1,0 +1,8 @@
+
+public class ServerProxy implements Server {
+
+	public ServerProxy() {
+		// TODO Auto-generated constructor stub
+	}
+	
+}

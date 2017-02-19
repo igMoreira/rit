@@ -1,0 +1,18 @@
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+
+
+public class SubkeyGuessTable{
+
+	private List<List<Byte>> matrix = new ArrayList<List<Byte>>();
+	
+
+	private static final long serialVersionUID = 1L;
+	
+	public void setByte(int index, int round)
+	{
+		
+	}
+	
+}

@@ -1,0 +1,118 @@
+import java.io.IOException;
+import java.net.UnknownHostException;
+
+import javax.jws.WebParam.Mode;
+
+
+public class MatchController {
+	
+	private static Player realPlayer;
+	private static Player virtualPlayer;
+	
+	public void startMatch(PubDiceUI view, String playerName)
+	{
+		view.enableButtons(false);
+		view.setMessage("Waiting for partner");
+		PubDiceServices model = null;
+		String[] response = null;
+		try {
+			model = ServerProxy.getInstance();
+		} catch (UnknownHostException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		try {
+			response = model.join(playerName);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		String[] playersInfo = response[0].split(" ");
+		String[] turnInfo = response[1].split(" ");
+		
+		realPlayer = new Player();
+		virtualPlayer = new Player();
+		realPlayer.setName(playersInfo[Integer.parseInt(turnInfo[1])]);
+		virtualPlayer.setName(playersInfo[Integer.parseInt(turnInfo[2])]);
+		realPlayer.setNumber(Integer.parseInt(playersInfo[3]));
+		virtualPlayer.setNumber(realPlayer.getNumber() == 1 ? 2 : 1 );
+		
+		view.setMessage(""+realPlayer.getName()+" -- "+virtualPlayer.getName());
+		if( realPlayer.getNumber() == Integer.parseInt(turnInfo[1]) )
+			view.enableButtons(true);
+		else
+			waitNextTurn(view);
+	}
+	
+	public void rollDie()
+	{
+		
+	}
+	
+	public void flipTile()
+	{
+		
+	}
+	
+	public void endTurn(PubDiceUI view)
+	{
+		PubDiceServices model = null;
+		try {
+			model = ServerProxy.getInstance();
+		} catch (UnknownHostException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		String[] response = null; 
+		response = model.endTurn();
+		String[] playerInfo = response[0].split(" ");
+		if(Integer.parseInt(playerInfo[1]) == realPlayer.getNumber())
+		{
+			realPlayer.setScore(Integer.parseInt(playerInfo[1]));
+			view.enableButtons(false);
+		}
+		
+	}
+	
+	private void waitNextTurn(PubDiceUI view)
+	{
+		PubDiceServices model = null;
+		try {
+			model = ServerProxy.getInstance();
+		} catch (UnknownHostException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		String[] response = null;
+		response = model.waitNextTurn();
+		if(response.length == 2)
+		{
+			String endMatchPrase = "";
+			String[] winnerInfo = response[1].split(" ");
+			switch(Integer.parseInt(winnerInfo[1]))
+			{
+			case 0:
+				break;
+			case 1:
+				break;
+			case 2:
+				break;
+			}
+			view.setMessage( 
+					(realPlayer.getNumber() == 1) 
+					? realPlayer.getName() + " " + realPlayer.getScore() + " -- " + virtualPlayer.getName() + " " + virtualPlayer.getScore() + " -- " + endMatchPrase 
+					: virtualPlayer.getName() + " " + virtualPlayer.getScore() + " -- " + realPlayer.getName() + " " + realPlayer.getScore() + " -- " + endMatchPrase);
+		}
+		else
+		{
+			
+		}
+	}
+}

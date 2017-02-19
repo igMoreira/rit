@@ -1,0 +1,64 @@
+import java.math.BigInteger;
+
+
+public class Group {
+
+	private BigInteger modulus;
+	private BigInteger publicExpoent;
+	private BigInteger privateExpoent;
+	private BigInteger cipherText;
+	
+	public Group() {
+	}
+	
+	public Group(BigInteger modulus, BigInteger publicExpoent,
+			BigInteger cipherText) {
+		super();
+		this.modulus = modulus;
+		this.publicExpoent = publicExpoent;
+		this.cipherText = cipherText;
+	}
+
+	public BigInteger getModulus() {
+		return modulus;
+	}
+
+	public void setModulus(BigInteger modulus) {
+		this.modulus = modulus;
+	}
+
+	public BigInteger getPublicExpoent() {
+		return publicExpoent;
+	}
+
+	public void setPublicExpoent(BigInteger publicExpoent) {
+		this.publicExpoent = publicExpoent;
+	}
+
+	public BigInteger getPrivateExpoent() {
+		return privateExpoent;
+	}
+
+	public void setPrivateExpoent(BigInteger privateExpoent) {
+		this.privateExpoent = privateExpoent;
+	}
+
+	public BigInteger getCipherText() {
+		return cipherText;
+	}
+
+	public void setCipherText(BigInteger cipherText) {
+		this.cipherText = cipherText;
+	}
+
+	public BigInteger getPlainText() {
+		return plainText;
+	}
+
+	public void setPlainText(BigInteger plainText) {
+		this.plainText = plainText;
+	}
+	
+	
+	
+}

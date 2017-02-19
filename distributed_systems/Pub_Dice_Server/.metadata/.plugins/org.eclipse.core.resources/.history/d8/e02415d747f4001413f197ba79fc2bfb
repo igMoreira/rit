@@ -1,0 +1,19 @@
+import java.net.DatagramSocket;
+
+
+public class UdpReceiver extends ReceiverThread {
+	private DatagramSocket server;
+	private byte[] receiveData;
+	
+	public UdpReceiver(DatagramSocket server) {
+		this.server = server;
+	}
+	
+	@Override
+	public synchronized void start() {
+		while(true)
+		{
+			
+		}
+	}
+}

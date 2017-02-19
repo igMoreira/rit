@@ -1,0 +1,9 @@
+
+public class CalcWorker implements Runnable {
+
+	@Override
+	public void run() {
+		
+	}
+
+}

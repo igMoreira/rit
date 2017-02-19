@@ -1,0 +1,12 @@
+
+public class CA {
+
+	public static void main(String[] args) {
+
+		String updateRule = "01111000";
+//		Bit[] initialState = 
+		
+		
+	}
+
+}

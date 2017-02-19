@@ -1,0 +1,5 @@
+
+public interface BlockRSA {
+	public byte[] encrypt(byte[] plainText);
+	public byte[] decrypt(byte[] cipherText);
+}

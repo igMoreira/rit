@@ -1,0 +1,19 @@
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+
+
+public class SubkeyGuessTable extends ArrayList<HashMap<Byte, List<Byte>>>{
+
+	public SubkeyGuessTable() {
+		this.add(new HashMap<Byte, List<Byte>>());
+		this.add(new HashMap<Byte, List<Byte>>());
+		this.add(new HashMap<Byte, List<Byte>>());
+	}
+	
+	public void setHash(HashMap<Byte, List<Byte>> table, int index)
+	{
+		
+	}
+	
+}

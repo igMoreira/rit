@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<qualifiedTypeNameHistroy>
+<fullyQualifiedTypeName name="java.net.Socket"/>
+<fullyQualifiedTypeName name="java.io.InputStream"/>
+<fullyQualifiedTypeName name="java.io.OutputStream"/>
+<fullyQualifiedTypeName name="Server"/>
+<fullyQualifiedTypeName name="java.io.PrintWriter"/>
+<fullyQualifiedTypeName name="java.io.InputStreamReader"/>
+<fullyQualifiedTypeName name="java.io.BufferedReader"/>
+<fullyQualifiedTypeName name="java.io.DataOutputStream"/>
+<fullyQualifiedTypeName name="java.awt.event.ActionListener"/>
+<fullyQualifiedTypeName name="javax.jws.WebParam.Mode"/>
+<fullyQualifiedTypeName name="PubDiceUI.DoneListener"/>
+<fullyQualifiedTypeName name="PubDiceUI.TileListener"/>
+<fullyQualifiedTypeName name="PubDiceUI.DiceListener"/>
+<fullyQualifiedTypeName name="java.awt.event.WindowAdapter"/>
+<fullyQualifiedTypeName name="java.awt.event.WindowEvent"/>
+<fullyQualifiedTypeName name="MatchController"/>
+<fullyQualifiedTypeName name="PubDiceUI.QuitListener"/>
+<fullyQualifiedTypeName name="Subject"/>
+<fullyQualifiedTypeName name="java.util.ArrayList"/>
+<fullyQualifiedTypeName name="Observer"/>
+<fullyQualifiedTypeName name="java.util.List"/>
+<fullyQualifiedTypeName name="java.lang.System"/>
+<fullyQualifiedTypeName name="Player"/>
+<fullyQualifiedTypeName name="PubDiceUI"/>
+<fullyQualifiedTypeName name="java.lang.Integer"/>
+<fullyQualifiedTypeName name="ResponseController"/>
+<fullyQualifiedTypeName name="ReceiverThread"/>
+<fullyQualifiedTypeName name="PubDiceServices"/>
+<fullyQualifiedTypeName name="ServerProxy"/>
+</qualifiedTypeNameHistroy>

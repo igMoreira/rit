@@ -1,0 +1,9 @@
+package interfaces.domain.banking.swen.rit;
+
+public abstract class Fee {
+
+	private Double value;
+	
+	abstract public Double applyFee(Double balance);
+	
+}

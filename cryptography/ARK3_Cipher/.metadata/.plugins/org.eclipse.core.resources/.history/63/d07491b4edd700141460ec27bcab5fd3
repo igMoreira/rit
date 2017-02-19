@@ -1,0 +1,204 @@
+
+
+import java.util.Arrays;
+
+import edu.rit.util.Hex;
+import edu.rit.util.Packing;
+
+/***
+ * 
+ * @author igMoreira
+ *	defines the ARK3 implementation, the block cipher itself
+ */
+public class Ark3 implements BlockCipher{
+	private int round = 1; // number of the actual round
+	private byte[] key = new byte[16];	// the original key provided by the user
+	private byte[] keyState = new byte[16];	// keystate = input key  and output key
+	private final int numRounds = 27;	// total number of rounds
+	private final int irreducible  = 0x11D; // irreducible polynomial (x8 + x4 + x3 + x2 + 1)
+
+	/***
+	 *  Constructor
+	 * @param key: byte array used as key
+	 */
+	public Ark3(byte[] key) {
+		this.key = key;
+	}
+
+	/***
+	 * Encapsulates the behavior for the user, basically allows the user
+	 * to call execute instead of ARK3Cipher that holds the cipher implementation
+	 * 
+	 * @return: The 64-bit stream block 
+	 */
+	public byte[] execute(byte[] text) {// text is equals the IV for the first round or the cipherText for the next rounds
+		round = 1;	// reset the round just to make sure it won't get wrong
+		System.arraycopy(key,0,keyState,0,key.length);
+//		this.keyState = Arrays.copyOf(key, key.length);
+		return Ark3Cipher(text); 
+	}
+
+	/***
+	 * Holds the ARK3 implementation, this is the cipher algorithm.
+	 * @param state: the 64-bit input state 
+	 * @return: The 64-bit stream block
+	 */
+	private byte[] Ark3Cipher(byte[] state)
+	{
+		for (int i = 0; i < numRounds; i++) {
+			System.out.print(round+"\t");
+			byte[] subkey = generateSubkey();
+			System.out.print(Hex.toString(subkey)+"\t");
+			for (int j = 0; j < subkey.length; j++) {
+				state[j] = (byte) ((state[j] ^ subkey[j])&255);
+			}
+			state = mix(permutation(state));
+			System.out.println(Hex.toString(state));
+		}
+		return state;
+	}
+
+	/***
+	 * Generates the round subkey
+	 * @return: The 64-bit subkey
+	 */
+	private byte[] generateSubkey()
+	{
+		// ROTATE 29 bits right
+
+		long[] test = new long[2];
+		long[] after = new long[2];
+		Packing.packLongLittleEndian(keyState, 0, test, 0, 2);
+		after[0] = test[0] >>> 29;
+		after[0] |= test[1] << 35;
+		after[1] = test[1] >>> 29;
+		after[1] |= test[0] << 35;
+		Packing.unpackLongLittleEndian(after,0, keyState,0,2);
+		
+		//Feed each of the eight most significant bytes through a different substitution box (S-box) as defined above.
+		//Permute the eight most significant bytes into a different order as defined above.
+		byte[] RMS = new byte[8];
+		
+		for (int i = 0; i < RMS.length; i++) {
+			RMS[i] = keyState[i];
+		}
+
+		permutation(RMS); // permuted 8 most right bytes
+
+		//Mix each pair of the eight most significant bytes together by a mix function as defined above.
+		mix(RMS);
+		byte[] subkey = RMS;
+
+		//Add the round number (1 for the first round, 2 for the second round, etc.) to the least significant byte, using addition in the same field GF(28)/f(x) as the S-box.
+		keyState[keyState.length-1] = addRound(keyState[keyState.length-1]); 
+
+		//Rejoin the bytes into the 128-bit key state.
+		
+		for (int i = 0; i < subkey.length; i++) {
+			keyState[i] = subkey[i];
+		}
+
+		//The 64 most significant bits of the key state are the subkey.
+		return subkey;
+	}
+
+	/***
+	 * The S-box layer of the cipher was encapsulated in this method,
+	 * it does the S-box calculation and the permutation that follows.
+	 * 
+	 * @param state: 64-bit input state
+	 * @return: 64-bit permuted byte array
+	 */
+	private byte[] permutation(byte[] state)
+	{
+		byte[] result = new byte[8];
+		for (int i = 0; i < state.length; i++) {
+			int b = 0xC0; // (x7 + x6) 11000000
+			int a = state[i];
+			int c = 0x63; // (x6 + x5 + x + 1)
+
+			//  (x8 + x4 + x3 + x2 + 1). The formula for the S-box is Si(a) = ((x7 + x6) + i)×a + (x6 + x5 + x + 1)
+			int d = 0x00;
+			d = b ^ (i+1); // ((x7 + x6) + i)
+			d = multiplyGalois(d, a);
+			d = d ^ c;
+			result[i] = (byte) d;
+		}
+
+		//Byte 1 moves to position 2.
+		state[1] = result[0];
+		//Byte 2 moves to position 5.
+		state[4] = result[1];
+		//Byte 3 moves to position 8.
+		state[7] = result[2];
+		//Byte 4 moves to position 3.
+		state[2] = result[3];
+		//Byte 5 moves to position 6.
+		state[5] = result[4];
+		//Byte 6 moves to position 1.
+		state[0] = result[5];
+		//Byte 7 moves to position 4.
+		state[3] = result[6];
+		//Byte 8 moves to position 7.
+		state[6] = result[7];
+
+		return state;
+	}
+
+	/***
+	 * Encapsulates the mix layer in this method.
+	 * Applies the mix formula
+	 * @param state: 64-bit input state
+	 * @return: The mixed 64-bit byte array
+	 */
+	private byte[] mix(byte[] state)
+	{
+		int m = 0x02; // (x)
+		int k = 0x03; // (x + 1)
+		int a = 0x00;
+		int b = 0x00;
+
+		//(c, d) = Mix(a, b), where c = (x)×a + b and d = a + (x + 1)×b
+		for (int i = 0; i < state.length; i+=2) {
+			a = state[i];
+			b = state[i+1];
+			state[i] = (byte) ((multiplyGalois(m, a)) ^ b);
+			state[i+1] = (byte) (a ^ (multiplyGalois(k, b)));
+		}
+
+		return state;
+	}
+
+	/***
+	 * This is part of the subkey generation, encapsulates
+	 * the round summation.
+	 * 
+	 * @param LMS: Left Most Significant byte of the key state
+	 * @return: The LMS byte summation with the round number in the Galois Field (2^8)/f(x)
+	 */
+	private byte addRound(byte LMS)
+	{	 
+		byte sum = (byte) (LMS ^ round);
+		round++;
+		return sum;
+	}
+
+	/***
+	 * Encapsulates the Galois Field multiplication operation
+	 * @param a: Multiplicand polynomial
+	 * @param b: Coefficients of multiplier polynomial
+	 * @return: Product polynomial
+	 */
+	private int multiplyGalois(int a, int b)
+	{
+		int c = 0;
+		for (int bit = 0x80; bit > 0; bit >>= 1)
+		{
+			c <<= 1;
+			if ((c & 0x100) != 0) c ^= irreducible;
+			if ((b & bit) != 0) c ^= a;
+		}
+		return c;
+	}
+
+}

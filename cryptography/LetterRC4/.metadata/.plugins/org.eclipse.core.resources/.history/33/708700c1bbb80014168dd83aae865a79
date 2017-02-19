@@ -1,0 +1,86 @@
+
+
+import java.nio.charset.Charset;
+import java.security.InvalidKeyException;
+
+public abstract class LetterRC4{
+
+	private byte[] key;
+	private byte[] keyStream;
+	
+	
+	public LetterRC4(String key) throws InvalidKeyException {
+		this.key = new byte[key.length()];
+		for (int i = 0; i < key.length(); i++) {
+			key = key.toUpperCase();
+			char aux = key.charAt(i);
+			if( (aux >= 0x41 && aux <= 0x5A) || (aux >= 0x61 && aux <= 0x7A) )
+				this.key[i] = (byte) (aux - 0x41);
+			else
+				throw new InvalidKeyException("KEY ERROR: The key must contain just letters");
+		}
+	}
+	
+	protected abstract byte operationFormula(int a, int b);
+	
+	protected String execute(String text) {
+		text = text.toUpperCase();
+		byte[] y = text.getBytes(Charset.forName("UTF-8"));
+		text = null;
+		byte[] x = RC4(y);
+		StringBuilder res = new StringBuilder();
+		for (int i = 0; i < x.length; i++) {
+			res.append((char)(x[i]+65));
+		}
+		return res.toString();
+	}
+	
+	private byte[] RC4(byte[] text)
+	{
+		byte[] tmp = validateText(text);
+		byte[] x = new byte[tmp.length];
+		text = null;
+		generateKeyStream(tmp.length);
+		for (int i = 0; i < tmp.length; i++) {
+			int a = (tmp[i]-0x41);
+			int b = (keyStream[i]);
+			x[i] =  operationFormula(a,b);
+		}
+		return x;
+	}
+	
+	private void generateKeyStream(int textLength){
+			int i = 0;
+			int j = 0;
+			byte aux;
+			byte[] S = new byte[(key.length < 26) ? 26 : key.length];
+			keyStream = new byte[textLength];
+
+			for (int k = 0; k < S.length; k++) {
+				S[k] = (byte) (key[k % key.length]);
+			}
+
+			for (int counter = 0; counter < textLength; counter++) {
+				i = (i+1)% 26;
+				j = (j+S[i])% 26;
+				aux = S[i];
+				S[i] = S[j];
+				S[j] = aux;
+				keyStream[counter] = S[(S[i]+S[j]) % 26];
+			}
+	}
+	
+	private byte[] validateText(byte[] text)
+	{
+		StringBuilder temp = new StringBuilder();
+		for (int i = 0; i < text.length; i++) {
+			if( (text[i] >= 0x41 && text[i] <= 0x5A) || (text[i] >= 0x61 && text[i] <= 0x7A))
+			{
+				temp.append((char)text[i]);
+			}
+		}
+		text = null;
+		return temp.toString().getBytes();
+	}
+
+}

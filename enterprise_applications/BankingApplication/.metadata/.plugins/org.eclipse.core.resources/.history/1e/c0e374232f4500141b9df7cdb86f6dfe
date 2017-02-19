@@ -1,0 +1,10 @@
+package domain.banking.swen.rit;
+
+import java.sql.Date;
+
+public class Transaction {
+
+	private Date date;
+	
+	
+}

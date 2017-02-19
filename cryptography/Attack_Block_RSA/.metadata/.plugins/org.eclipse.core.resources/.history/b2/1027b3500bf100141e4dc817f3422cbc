@@ -1,0 +1,45 @@
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
+import java.math.BigInteger;
+import java.util.ArrayList;
+import java.util.List;
+
+
+public class RsaDecrypt {
+
+	public static void main(String[] args) {
+		BufferedReader in = null;
+		try {
+			FileReader file = new FileReader(args[0]);
+			in = new BufferedReader(file);
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		List<Group> groups = new ArrayList<Group>();
+		String line;
+		Group group;
+		try {
+			for(int i=1; (line = in.readLine()) != null ;i++)
+			{
+				switch(i%3)
+				{
+				case 0:
+					group = new Group();
+					group.setModulus(new BigInteger(line));
+					break;
+				case 1:
+					group.setPublicExpoent(new BigInteger(line));
+					break;
+				case 2:
+				}
+			}
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+}

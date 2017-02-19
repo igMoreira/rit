@@ -1,0 +1,70 @@
+import java.util.List;
+import edu.rit.util.Hex;
+
+
+/**
+ * Provides an application that performs an known plaintext attack
+ * in the cipher SIMON 48/96
+ * 
+ * @author igMoreira
+ *
+ */
+public class CrackSimon {
+
+	/**
+	 * MAIN method
+	 * 
+	 * @param args: user inputed data pt/ct pairs
+	 */
+	public static void main(String[] args) {
+		usage(args);
+		int[] ptSet = new int[args.length/2];
+		int[] ctSet = new int[args.length/2];
+		
+		for (int i = 0, j=0; j < args.length; i++, j+=2) {
+			try{
+				ptSet[i] = Hex.toByteArray(args[j]);
+			}
+			catch(Exception e)
+			{
+				System.out.printf("Not a valid Hex character in the input %s\n",args[j]);
+				System.exit(2);
+			}
+			try{
+				ctSet[i] = Hex.toByteArray(args[j+1]);
+			}
+			catch(Exception e)
+			{
+				System.out.printf("Not a valid Hex character in the input %s\n",args[j+1],j);
+				System.exit(3);
+			}
+		}
+		
+		MitmAttackSimon attack = new MitmAttackSimon(ptSet, ctSet);
+		List<byte[]> result = attack.execute();
+		System.out.printf("%s\t%s\t%s\n",
+				Hex.toString(result.get(0)).toUpperCase(),
+				Hex.toString(result.get(1)).toUpperCase(),
+				Hex.toString(result.get(2)).toUpperCase());
+	}
+	
+	/**
+	 * Validate the application syntax and the user inputed data
+	 * @param args
+	 */
+	private static void usage(String[] args)
+	{
+		if(args.length == 0)
+		{
+			System.out.println("There must be one or more (plaintext, ciphertext) pairs.");
+			System.out.println("java CrackSimon <pt1> <ct1> [<pt2> <ct2> ...]");
+			System.exit(0);
+		}
+		if(args.length%2 != 0)
+		{
+			System.out.println("The input should be given as pairs pt/ct");
+			System.out.println("java CrackSimon <pt1> <ct1> [<pt2> <ct2> ...]");
+			System.exit(1);
+		}
+	}
+}

@@ -1,0 +1,94 @@
+import java.io.IOException;
+import java.net.Socket;
+import java.net.UnknownHostException;
+
+/**
+ * This class represents the MVC model,
+ * this is responsible for formating and packing a
+ * request to sent to the server.
+ * THIS CLASS DOES NOT SEND AT ALL.
+ * It delegates the send request
+ * for the SenderThread.
+ * 
+ * @author igMoreira
+ *
+ */
+public class ServerProxy implements PubDiceServices  {
+
+	private static ReceiverThread receiver;
+	private static SenderThread sender;
+	private static Socket conn;
+	
+	/**
+	 * CONSTRUCTOR
+	 */
+	public ServerProxy(){
+	}
+	
+	/**
+	 * CONSTRUCTOR
+	 * 
+	 * @param host: host to be connected
+	 * @param port: port to be connected
+	 * @throws UnknownHostException: If not possible to connect
+	 * @throws IOException: If not possible to get the streams
+	 */
+	public ServerProxy(String host, int port) throws UnknownHostException, IOException {
+		if(conn == null)
+		{
+			conn = new Socket(host, port);
+			receiver = new ReceiverThread(conn.getInputStream());
+			sender = new SenderThread(conn.getOutputStream());
+			receiver.setPriority(Thread.MAX_PRIORITY);
+			receiver.start();
+			sender.start();
+		}
+	}
+
+	public ReceiverThread getReceiver() {
+		return receiver;
+	}
+
+	@Override
+	public void join(String playerName) throws IOException {
+		String request = "join "+ playerName;
+		sender.sendRequest(request);
+	}
+
+	@Override
+	public void turnTile(int x, boolean up) throws IOException {
+		String request = "tile "+ x + ((up) ? " up " : " down ");
+		sender.sendRequest(request);
+	}
+
+	@Override
+	public void rollDie() {
+		String request = "roll";
+		sender.sendRequest(request);
+	}
+
+	@Override
+	public void quit() {
+		String request = "quit";
+		sender.sendRequest(request);
+	}
+
+	@Override
+	public void endTurn() {
+		String request = "done";
+		sender.sendRequest(request);
+	}
+	
+	public void closeConnection()
+	{
+		try {
+			receiver.getIn().close();
+			sender.getOut().close();
+			conn.close();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+}

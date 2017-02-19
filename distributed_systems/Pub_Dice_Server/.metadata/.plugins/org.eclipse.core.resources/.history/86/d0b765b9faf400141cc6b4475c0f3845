@@ -1,0 +1,9 @@
+import java.util.LinkedList;
+import java.util.Queue;
+
+
+public class MatchManager {
+
+	private Queue<Player> waitingPlayers = new LinkedList<Player>();
+	
+}

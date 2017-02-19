@@ -1,0 +1,19 @@
+
+public class FunctionTest {
+
+	
+	public double calculate(Integer[] function, Integer startPoint, Integer endPoint)
+	{
+		int numThreads = 4;
+		int numIntervals = 1;
+		double lengthThreadDivision = (endPoint-startPoint)/numThreads;
+		
+		
+		return 0;
+	}
+	
+	private double threadCalculation(Integer[] function, Integer startPoint, Integer endPoint, int numIntervals)
+	{
+		
+	}
+}

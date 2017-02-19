@@ -1,0 +1,23 @@
+
+public class FunctionTest {
+
+	
+	public double calculate(Integer[] function, Integer startPoint, Integer endPoint)
+	{
+		// take the exponent and sum one and divide by it
+		Integer[] exponents = new Integer[function.length];
+		exponents[function.length-1] = 1;
+		for (int i = 0; i < exponents.length; i++) {
+			exponents[i] = Math.abs(i-(function.length-1));
+			System.out.println(integer);
+		}
+		for (Integer integer : exponents) {
+			
+		}
+		
+		// substitute the function for the points and calculate
+		// subtract the values
+		
+		return 0;
+	}
+}

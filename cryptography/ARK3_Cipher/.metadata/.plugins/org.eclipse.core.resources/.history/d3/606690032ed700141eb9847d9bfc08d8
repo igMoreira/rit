@@ -1,0 +1,79 @@
+import edu.rit.util.Packing;
+
+/***
+ * Defines the ARK3 cipher in Cipher Feedback Mode operation
+ * @author igMoreira
+ *
+ */
+public class Ark3CFB extends OperationMode {
+	
+	private byte[] x = new byte[8];
+	private int k;
+	
+	
+	public void setIV(byte[] x) {
+		this.x = x;
+	}
+
+	/***
+	 * Constructor
+	 * @param key: 128-bit key to be used in the block cipher
+	 */
+	public Ark3CFB(byte[] key) {
+		super(new Ark3(key));
+		k = 8;
+	}
+
+	/***
+	 * Defines the encrypt execution of the ARK3 in CFB operation mode
+	 * 
+	 * @return: The final cipher
+	 */
+	@Override
+	public byte[] encrypt(int text) {
+		/*byte[] result = new byte[text.length];
+//		byte[] x = new byte[8];
+//		System.arraycopy(IV, 0, x, 0, 8);
+		for (int i = 0; i < text.length; i++) {
+			if(i%8 == 0)
+			{
+				x = this.cipher.execute(x);
+			}
+			result[i] = (byte) (x[i%8] ^ text[i]);
+			x[i%8] = result[i];
+		}
+		
+		return result;*/
+		
+		if (k == 8)
+		{
+			Packing.unpackIntBigEndian (++ counter, keystream, 4);
+			cipher.encrypt (keystream);
+			k = 0;
+		}
+		return (text ^ keystream[k++]) & 255;
+	}
+	
+	/***
+	 * Defines the encrypt execution of the ARK3 in CFB operation mode
+	 * 
+	 * @return: The final plain text
+	 */
+	@Override
+	public byte[] decrypt(byte[] text, byte[] IV) {
+		byte[] result = new byte[text.length];
+		byte[] x = new byte[8];
+		System.arraycopy(IV, 0, x, 0, IV.length);
+		for (int i = 0; i < text.length; i++) {
+			if(i%8 == 0)
+			{
+				x = this.cipher.execute(x);
+			}
+			result[i] = (byte) (x[i%8] ^ text[i]);
+			x[i%8] = text[i];
+		}
+		
+		return result;
+	}
+
+}

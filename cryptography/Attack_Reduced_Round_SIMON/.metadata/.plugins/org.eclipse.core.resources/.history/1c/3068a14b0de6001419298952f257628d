@@ -1,0 +1,167 @@
+import java.util.ArrayList;
+import java.util.List;
+
+import edu.rit.util.Packing;
+
+
+public class MitmAttackSimon {
+	private SimonCipher oracle = new SimonCipher();
+	private List<byte[]> subkeys = new ArrayList<byte[]>();
+	private SubkeyGuessTable subkeyTable = new SubkeyGuessTable();
+	private int counter = 3;
+	private byte[][] pt;
+	byte[][] ct;
+	
+	public MitmAttackSimon(byte[][] pt, byte[][] ct) {
+		this.pt = pt;
+		this.ct = ct;
+	}
+	
+	/**
+	 * Meet in the middle execution command
+	 * @return: list of the subkeys for the three rounds
+	 */
+	public List<byte[]> execute()
+	{
+		subkeys.add(new byte[3]);
+		subkeys.add(new byte[3]);
+		subkeys.add(new byte[3]);
+		while(counter <= 5)
+		{
+			bottomUp(ct[0]);
+			topDown(pt[0]);		
+			counter++;
+		}
+
+		return subkeys;
+	}
+
+	/**
+	 * The bottom up part of the meet in the middle attack
+	 * decrypts the ciphertext using byte guesses to subkeys
+	 * of round 3 and 2, collects the results and store in
+	 * a hash table
+	 * 
+	 * @param ct: cipher text to be decrypted
+	 */
+	private void bottomUp(byte[] ct)
+	{
+		int subKey3_guess = 0x00;
+		byte[] subkey3_packed = new byte[4];
+		byte[] subkey_aux= new byte[3];
+		byte[] result = new byte[6];
+		int subKey2_guess = 0x00;
+		byte[] subkey2_packed = new byte[4];
+		while(subKey3_guess <= 0xFF)
+		{
+			Packing.unpackIntBigEndian(subKey3_guess, subkey3_packed, 0);
+			System.arraycopy(subkey3_packed, 1, subkey_aux, 0, 3);
+			result = oracle.decrypt(subkey_aux, ct);
+			subKey2_guess = 0x00;
+			while(subKey2_guess <= 0xFF)
+			{
+				List<Byte> subkeys = new ArrayList<Byte>();
+				Packing.unpackIntBigEndian(subKey2_guess, subkey2_packed, 0);
+				System.arraycopy(subkey2_packed, 1, subkey_aux, 0, 3);
+				result = oracle.decrypt(subkey_aux, result);
+				subkeys.add((byte)subKey3_guess);
+				subkeys.add((byte)subKey2_guess);
+				if(!subkeyTable.containsKey(result[counter]))
+				{
+					List<List<Byte>> list = new ArrayList<List<Byte>>();
+					list.add(subkeys);
+					subkeyTable.put(result[counter], list);
+				}
+				else
+				{
+					List<List<Byte>> list = subkeyTable.get(result[counter]);
+					list.add(subkeys);
+					subkeyTable.put(result[counter], list);	
+				}
+				subKey2_guess++;
+			}
+			subKey3_guess++;
+		}
+	}
+
+	/**
+	 * Implements the top down part of the meet in the middle attack
+	 * encrypts the text using byte guess of the subkey of round 1 till
+	 * the middle point. If the value of the result match with the bottom
+	 * up result a test is performed to verify if it happens in all pt/ct
+	 * pairs.
+	 * 
+	 * @param pt: plaintext to encrypt
+	 */
+	private void topDown(byte[] pt)
+	{
+		int subKey1_guess = 0x00;
+		byte[] subkey1_packed = new byte[4];
+		byte[] subkey_aux= new byte[3];
+		byte[] result = new byte[6];
+		while(subKey1_guess <= 0xFF)
+		{
+			Packing.unpackIntBigEndian(subKey1_guess, subkey1_packed, 0);
+			System.arraycopy(subkey1_packed, 1, subkey_aux, 0, 3);
+			result = oracle.encrypt(subkey_aux, pt);
+			if(subkeyTable.containsKey(result[counter]))
+			{
+				byte[] subkey0 = new byte[3];
+				byte[] subkey1 = new byte[3];
+				byte[] subkey2 = new byte[3];
+				for (List<Byte> list : subkeyTable.get(result[counter])) {
+					boolean status = true;
+					subkey0[(counter+2)-5] = subkey_aux[(counter+2)-5];
+					subkey1[(counter+2)-5] = list.get(1);
+					subkey2[(counter+2)-5] = list.get(0);
+					for(int i = 0; i < this.pt.length && status; i++)
+					{
+						status = encryptTest(subkey0, subkey1, subkey2, this.pt[i], this.ct[i], counter);
+					}
+					if(status)
+					{
+						this.subkeys.get(0)[(counter+2)-5] = subkey0[(counter+2)-5];
+						this.subkeys.get(1)[(counter+2)-5] = subkey1[(counter+2)-5];
+						this.subkeys.get(2)[(counter+2)-5] = subkey2[(counter+2)-5];
+						return;
+					}
+				}
+			}
+			subKey1_guess++;
+		}
+	}
+	
+	/**
+	 * Tests wether the byte in position index of the subkeys produces the
+	 * expected result.
+	 * 
+	 * @param sub1: sub key of the first round
+	 * @param sub2: sub key of the second round
+	 * @param sub3: sub key of the third round
+	 * @param pt: plaintext
+	 * @param ct: ciphertext of the plaintext above using SIMON 48/96
+	 * @param index: The index represents the byte of the keys that are being guessed
+	 * @return: true if the guess worked for the three rounds and false if the result is different to the ciphertext
+	 */
+	public boolean encryptTest(byte[] sub1, byte[] sub2, byte[] sub3, byte[] pt, byte[] ct, int index)
+	{
+		byte[] result = new byte[pt.length]; 
+		for (int i = 0; i < 3; i++) {
+			switch(i)
+			{
+			case 0:
+				result = oracle.encrypt(sub1, pt);
+				break;
+			case 1:
+				result = oracle.encrypt(sub2, result);
+				break;
+			case 2:
+				result = oracle.encrypt(sub3, result);
+				break;
+			}
+		}
+		return (ct[index] == result[index]);
+	}
+
+
+}

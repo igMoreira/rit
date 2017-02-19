@@ -1,0 +1,5 @@
+package cipher_core;
+
+public abstract class TestAb {
+	protected abstract void test();
+}

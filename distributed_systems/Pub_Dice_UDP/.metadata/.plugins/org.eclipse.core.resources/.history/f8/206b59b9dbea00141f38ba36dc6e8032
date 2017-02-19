@@ -1,0 +1,27 @@
+import java.io.OutputStream;
+import java.io.PrintWriter;
+
+
+public class SenderThread extends Thread{
+	
+	private PrintWriter out;
+	
+	public SenderThread(OutputStream out) {
+		this.out = new PrintWriter(out);
+	}
+	
+	@Override
+	public void run() {
+		while(true)
+		{
+			out.
+		}
+	}
+	
+	public void sendRequest(String request)
+	{
+		out.println(request);
+		out.flush();
+	}
+
+}

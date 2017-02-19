@@ -1,0 +1,76 @@
+import java.util.BitSet;
+
+
+public class ParallelCellularAutomaton {
+
+	private BitSet updateRule;
+	private int smallestPopCounter = 0;
+	private int smallestPopStep = 0;
+	private int largestPopCounter = 0;
+	private int largestPopStep = 0;
+	private int finalPopCounter = 0;
+	private int finalPopStep = 0;
+	
+	public ParallelCellularAutomaton(BitSet updateRule) {
+		this.updateRule = updateRule;
+	}
+	
+	
+	public int getSmallestPopCounter() {
+		return smallestPopCounter;
+	}
+
+	public void setSmallestPopCounter(int smallestPopCounter) {
+		this.smallestPopCounter = smallestPopCounter;
+	}
+
+	public int getSmallestPopStep() {
+		return smallestPopStep;
+	}
+
+	public void setSmallestPopStep(int smallestPopStep) {
+		this.smallestPopStep = smallestPopStep;
+	}
+
+	public int getLargestPopCounter() {
+		return largestPopCounter;
+	}
+
+	public void setLargestPopCounter(int largestPopCounter) {
+		this.largestPopCounter = largestPopCounter;
+	}
+
+	public int getLargestPopStep() {
+		return largestPopStep;
+	}
+
+	public void setLargestPopStep(int largestPopStep) {
+		this.largestPopStep = largestPopStep;
+	}
+
+	public int getFinalPopCounter() {
+		return finalPopCounter;
+	}
+
+	public void setFinalPopCounter(int finalPopCounter) {
+		this.finalPopCounter = finalPopCounter;
+	}
+
+	public int getFinalPopStep() {
+		return finalPopStep;
+	}
+
+	public void setFinalPopStep(int finalPopStep) {
+		this.finalPopStep = finalPopStep;
+	}
+	
+	public BitSet calcNextState(BitSet currentState)
+	{
+		BitSet copy = (BitSet) currentState.clone();
+		for (int i = 0; i < currentState.length(); i++) {
+			Worker w = new Worker();
+			copy = w.calcPositionState(copy, updateRule, i);
+		}
+		return copy;
+	}
+}

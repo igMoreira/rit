@@ -1,0 +1,58 @@
+import java.util.Arrays;
+import java.util.List;
+
+import edu.rit.util.Hex;
+
+
+
+public class CrackSimon {
+
+	public static void main(String[] args) {
+		usage(args);
+		
+		byte[][] ptSet = new byte[args.length/2][3];
+		byte[][] ctSet = new byte[args.length/2][3];
+		
+		for (int i = 0, j=0; j < args.length; i++, j+=2) {
+			try{
+				ptSet[i] = Hex.toByteArray(args[j]);
+			}
+			catch(Exception e)
+			{
+				System.out.printf("Not a valid Hex character in the input %s\n",args[j]);
+				System.exit(2);
+			}
+			try{
+				ctSet[i] = Hex.toByteArray(args[j+1]);
+			}
+			catch(Exception e)
+			{
+				System.out.printf("Not a valid Hex character in the input %s\n",args[j+1],j);
+				System.exit(3);
+			}
+		}
+		
+		MitmAttackSimon attack = new MitmAttackSimon(ptSet, ctSet);
+		List<byte[]> result = attack.execute();
+		System.out.printf("%s\t%s\t%s\n",
+				Hex.toString(result.get(0)).toUpperCase(),
+				Hex.toString(result.get(1)).toUpperCase(),
+				Hex.toString(result.get(2)).toUpperCase());
+	}
+	
+	private static void usage(String[] args)
+	{
+		if(args.length == 0)
+		{
+			System.out.println("There must be one or more (plaintext, ciphertext) pairs.");
+			System.out.println("java CrackSimon <pt1> <ct1> [<pt2> <ct2> ...]");
+			System.exit(0);
+		}
+		if(args.length%2 != 0)
+		{
+			System.out.println("The input should be given as pairs pt/ct");
+			System.out.println("java CrackSimon <pt1> <ct1> [<pt2> <ct2> ...]");
+			System.exit(1);
+		}
+	}
+}

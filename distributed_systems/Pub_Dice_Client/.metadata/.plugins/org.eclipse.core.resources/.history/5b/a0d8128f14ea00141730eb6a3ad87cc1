@@ -1,0 +1,42 @@
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.io.PrintWriter;
+import java.net.Socket;
+import java.net.UnknownHostException;
+import java.util.ArrayList;
+import java.util.List;
+
+
+public class ServerProxy implements PubDiceServices {
+
+	private final String host = "queeg.cs.rit.edu";
+	private final int port = 4242;
+	private Socket conn;
+	private InputStream in;
+	private OutputStream out;
+	
+	public ServerProxy() throws UnknownHostException, IOException {
+		conn = new Socket(host, port);
+		in = conn.getInputStream();
+		out = conn.getOutputStream();
+	}
+
+	@Override
+	public List<String> join(String playerName) throws IOException {
+		PrintWriter out = new PrintWriter(this.out, true);
+		out.printf("join %s\n",playerName);
+		out.flush();
+		BufferedReader in = new BufferedReader(new InputStreamReader(this.in));
+		List<String> response = new ArrayList<String>();
+		response.add(in.readLine());
+		for(int i =0;  response.get(i) != null; i++)
+		{	
+			response.add(in.readLine())
+		}
+		return response;
+	}
+	
+}

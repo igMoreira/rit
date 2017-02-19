@@ -1,0 +1,15 @@
+package domain.banking.swen.rit;
+
+public class Bank {
+
+	private Integer bankAgency;
+	private String address;
+	
+	public String getAddress() {
+		return address;
+	}
+	
+	public Integer getBankAgency() {
+		return bankAgency;
+	}
+}

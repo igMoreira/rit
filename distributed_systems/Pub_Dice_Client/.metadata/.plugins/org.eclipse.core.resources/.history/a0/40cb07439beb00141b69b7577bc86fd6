@@ -1,0 +1,75 @@
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * Implements a thread responsible for receiving
+ * content of the server. This thread will only
+ * receive will never send anything.
+ * 
+ * @author igMoreira
+ *
+ */
+public class ReceiverThread extends Thread implements Subject{
+
+	private BufferedReader in;
+	private String response = null;
+	private List<Observer> observers = new ArrayList<Observer>();
+	
+	/**
+	 * CONSTRUCTOR
+	 * 
+	 * @param in: Connection InputStream to listen 
+	 */
+	public ReceiverThread(InputStream in) {
+		this.in = new BufferedReader(new InputStreamReader(in));
+	}
+	
+	/**
+	 * Returns the connection input stream
+	 * @return
+	 */
+	public BufferedReader getIn() {
+		return in;
+	}
+	
+	/**
+	 * Thread functionality 
+	 * Task to be executed.
+	 */
+	@Override
+	public void run() {
+			try {
+				String response;
+				while((response = in.readLine()) != null)
+				{
+					this.response = response;
+					notifyObservers();
+					this.response = null;
+					response = null;
+				}
+			} catch (IOException e) {
+				System.out.println("IO ERROR: Error trying to access input stream");
+				System.exit(0);
+				e.printStackTrace();
+			}
+	}
+
+	/**
+	 * 
+	 */
+	@Override
+	public void subscribe(Observer o) {
+		this.observers.add(o);
+	}
+
+	@Override
+	public void notifyObservers() {
+		for (Observer o : observers) {
+			o.update(response);
+		}
+	}
+}

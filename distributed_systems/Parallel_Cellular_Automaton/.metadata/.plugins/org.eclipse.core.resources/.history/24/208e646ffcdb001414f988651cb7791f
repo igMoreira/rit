@@ -1,0 +1,9 @@
+
+public class Worker {
+
+	
+	public int calcNextState(int currentState)
+	{
+		
+	}
+}

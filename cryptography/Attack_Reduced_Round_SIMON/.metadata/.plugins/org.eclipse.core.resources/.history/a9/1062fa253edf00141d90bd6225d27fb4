@@ -1,0 +1,19 @@
+import edu.rit.util.Hex;
+
+
+public class CrackSimon {
+
+	public static void main(String[] args) {
+		byte[] sub1 = new byte[3];
+		byte[] sub2 = new byte[3];
+		byte[] sub3 = new byte[3];
+		
+		sub1 = Hex.toByteArray("7E799E");
+		sub2 = Hex.toByteArray("0F65B9");
+		sub3 = Hex.toByteArray("8DEAB8");
+		
+		byte[] pt = Hex.toByteArray("16D64E9F444F");
+		byte[] ct = new byte[6];
+	}
+
+}

@@ -1,0 +1,12 @@
+import java.util.List;
+
+
+public class ResponseHandler implements Observer{
+
+	@Override
+	public void update(List<String> response) {
+		// TODO Auto-generated method stub
+		
+	}
+
+}

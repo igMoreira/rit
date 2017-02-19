@@ -1,0 +1,46 @@
+import java.io.IOException;
+
+
+public class RequestController {
+
+	public void startMatch(Player playerONE, Player playerTWO)
+	{
+		try {
+			PubDiceServices proxy = new ClientProxy(playerONE.getPort(), playerONE.getIPAddress());
+			proxy.join(playerONE.getName(), playerTWO.getName(), 1);
+			proxy = new ClientProxy(playerTWO.getPort(), playerTWO.getIPAddress());
+			proxy.join(playerONE.getName(), playerTWO.getName(), 2);
+			startTurn(playerONE, playerTWO);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public void startTurn(Player currentPlayer, Player endingTurn)
+	{
+		PubDiceServices proxy = new ClientProxy(currentPlayer.getPort(),currentPlayer.getIPAddress());
+		proxy.startTurn(currentPlayer.getPlayerNumber());
+		proxy = new ClientProxy(endingTurn.getPort(), endingTurn.getIPAddress());
+		proxy.startTurn(currentPlayer.getPlayerNumber());
+	}
+	
+	public void score(Player currentPlayer, Player waitingPlayer)
+	{
+		PubDiceServices proxy = new ClientProxy(currentPlayer.getPort(),currentPlayer.getIPAddress());
+		proxy.updateScore(currentPlayer.getPlayerNumber(), currentPlayer.getScore());
+		proxy = new ClientProxy(waitingPlayer.getPort(), waitingPlayer.getIPAddress());
+		proxy.updateScore(currentPlayer.getPlayerNumber(), currentPlayer.getScore());
+	}
+	
+	public void quit(Player playerONE, Player playerTWO)
+	{
+		quit(playerONE);
+		quit(playerTWO);
+	}
+	
+	public void quit(Player player)
+	{
+		PubDiceServices proxy = new new ClientProxy(player.getPort(),player.getIPAddress());
+	}
+	
+}

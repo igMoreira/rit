@@ -1,0 +1,34 @@
+
+public class Match {
+	private Player playerONE;
+	private Player playerTWO;
+	private Player currentPlayer;
+	
+	public Match(Player playerONE, Player playerTWO) {
+		this.playerONE = playerONE;
+		this.playerTWO = playerTWO;
+		currentPlayer = this.playerONE;
+	}
+
+	public Player getPlayerONE() {
+		return playerONE;
+	}
+
+	public Player getPlayerTWO() {
+		return playerTWO;
+	}
+
+	public Player getCurrentPlayer() {
+		return currentPlayer;
+	}
+
+	public void updateCurrentPlayer() {
+		if(currentPlayer == playerONE)
+			currentPlayer = playerTWO;
+		else
+			currentPlayer = playerONE;
+	}
+	
+	
+	
+}

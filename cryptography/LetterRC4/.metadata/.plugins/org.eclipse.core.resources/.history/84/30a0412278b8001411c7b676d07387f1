@@ -1,0 +1,24 @@
+
+public class Decrypt extends LetterRC4{
+
+	
+	public static void main(String[] args) {
+		String result;
+		String plainText = "In the beginning God created the heavens and the earth.\n"+
+							"And the earth was without form and void,\n"+
+							"and darkness was upon the face of the deep;\n"+
+							"and the Spirit of God was moving over the face of the waters.\n";
+		String cipherText = "SKOGHUZCRJGBVINOQDJYTJKHARJPNANNMEZCOWKMPQYEAWBISURGZUUJCJBXJUBIGTVSFVFTHFFBUFJUTRLDRBRVEDBGAKAOMQFYIBAGWYNJEGAOFVKSGBRNBQNOWJZECKHLPHSGEGSEGQWXRARGQYGJKBZHDFV";
+		String key = "qwertyuiopasdfghjklzxcvbnm";
+		LetterRC4 cipher = new Decrypt();
+		cipher.setKey(key);
+		result = cipher.execute(cipherText);
+		System.out.println(result);
+	}
+	
+	@Override
+	protected byte operationFormula(int a, int b) {
+		return (byte) ((a - b + 26) % 26);
+	}
+
+}

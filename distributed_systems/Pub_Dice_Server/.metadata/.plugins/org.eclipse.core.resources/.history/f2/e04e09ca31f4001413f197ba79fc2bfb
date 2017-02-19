@@ -1,0 +1,4 @@
+
+public abstract class CommunicationProtocol {
+	public abstract void sendRequest();
+}

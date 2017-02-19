@@ -1,0 +1,16 @@
+
+public class PubDiceServer {
+
+	public static void main(String[] args) {
+		
+	}
+	
+	private static void usage(String[] args)
+	{
+		if(args.length != 2)
+		{
+			System.out.println("SYNTAX ERROR: java PubDiceServer <host> <port>");
+		}
+	}
+	
+}

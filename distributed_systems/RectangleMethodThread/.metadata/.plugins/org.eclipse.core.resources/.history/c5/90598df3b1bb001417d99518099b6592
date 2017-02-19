@@ -1,0 +1,83 @@
+import java.security.InvalidParameterException;
+
+
+/***
+ * 
+ * @author igMoreira
+ *	Will provide the user an executable application, will be responsible
+ *	for get the user input and validate it.
+ */
+public class ComputeArea {
+
+	/***
+	 * Executable method
+	 * @param args: The user input passed through the command line.
+	 * @InvalidParameterException: If the parameters provided by the user are incorrect this execeptionis thrown
+	 * 
+	 */
+	public static void main(String[] args) {
+		if(args.length < 5)
+		{
+			throw new InvalidParameterException("SYNTAX ERROR: The correct syntax is: "
+					+ "ComputeArea <threads> <intervals> <start> <end> <function>");
+		}
+		validateThreadArgument(args[0]);
+		validateIntervalsArgument(args[1]);
+		validatePointsArgument(args[2], args[3]);
+		
+	}
+	
+	/***
+	 * Validates the Thread parameter provided by the user.
+	 * This parameter is valid only if is a number greater than 0.
+	 * 
+	 * @throw InvalidParameterException: If the parameter is invalid an exception is thrown
+	 */
+	private static void validateThreadArgument(String threadParameter)
+	{
+		Integer val = Integer.parseInt(threadParameter);
+		if(val <= 0)
+			throw new InvalidParameterException("PARAMETER ERROR: The thread number must be greater than zerol");
+	}
+	
+	/***
+	 * Vaidates the Intervals parameter provided by the user.
+	 * This parameter is valid only if is a number greater than 0.
+	 * 
+	 * @throw InvalidParameterException: If the parameter is invalid an exception is thrown
+	 */
+	private static void validateIntervalsArgument(String intervalParameter)
+	{
+		Integer val = Integer.parseInt(intervalParameter);
+		if(val <= 0)
+			throw new InvalidParameterException("PARAMETER ERROR: The interval number must be greater than zerol");
+	}
+	
+	/***
+	 * Validates the points provided by the user to calculate the area.
+	 * This parameters are valid only if the starting point is smaller than the end point,
+	 * and both are numbers.
+	 * 
+	 * @throw InvalidParameterException: If the parameter is invalid an exception is thrown
+	 */
+	private static void validatePointsArgument(String a, String b)
+	{
+		Integer p1 = Integer.parseInt(a);
+		Integer p2 = Integer.parseInt(b);
+		if(p2 < p1)
+			throw new InvalidParameterException("PARAMETER ERROR: Point B cannot be smaller than point A.");
+	}
+	
+	/***
+	 * Validates if a function provided by the user is valid.
+	 * A function is valid if contains only numbers.
+	 * @return: True if the parameter is valid, False if the parameter is invalid.
+	 */
+	private static void validateFunctionArguments(String... function)
+	{
+		for (String string : function) {
+			Integer.parseInt(string);
+		}
+	}
+
+}

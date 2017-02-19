@@ -1,0 +1,21 @@
+
+public class Ark3CFB extends OperationMode {
+
+	public Ark3CFB(byte[] key) {
+		super(new Ark3(key));
+	}
+
+	@Override
+	public byte[] execute(byte[] text, byte[] IV) {
+		byte[] result;
+		for (int i = 0; i < text.length; i++) {
+			result = this.cipher.execute(IV);
+			for (; i % 8 != 0; i++) {
+				
+			}
+		}
+		
+		throw new UnsupportedOperationException("Not implemented yet");
+	}
+
+}

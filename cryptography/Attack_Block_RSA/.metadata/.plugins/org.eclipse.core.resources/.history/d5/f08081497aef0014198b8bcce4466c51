@@ -1,0 +1,11 @@
+import java.math.BigInteger;
+
+
+public class RSA {
+
+	public BigInteger encrypt(BigInteger plainText)
+	{
+		return null;
+	}
+	
+}

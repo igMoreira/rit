@@ -1,0 +1,31 @@
+import java.net.InetAddress;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.Queue;
+
+
+public class MatchManager {
+
+	private static Queue<Player> waitingPlayers = new LinkedList<Player>();
+	private static HashMap<String, Match> matches = new HashMap<String, Match>();
+	
+	public synchronized void joinMatch(String playerName, int port, InetAddress IPAddress)
+	{
+		Player currentPlayer = new Player(playerName, port, IPAddress);
+		if(waitingPlayers.isEmpty())
+		{
+			currentPlayer.setPlayerNumber(1);
+			waitingPlayers.add(currentPlayer);
+		}
+		else
+		{
+			Player playerONE = waitingPlayers.poll();
+			Match match = new Match(playerONE, currentPlayer);
+			matches.put(IPAddress+":"+Integer.toString(port), match);
+			matches.put(playerONE.getIPAddress()+":"+Integer.toString(playerONE.getPort()), match);
+			RequestController controller = new RequestController();
+			controller.startMatch(playerONE, currentPlayer);
+		}
+	}
+	
+}

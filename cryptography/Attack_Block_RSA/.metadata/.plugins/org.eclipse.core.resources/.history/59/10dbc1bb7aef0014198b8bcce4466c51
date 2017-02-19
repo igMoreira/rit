@@ -1,0 +1,27 @@
+import java.math.BigInteger;
+
+/**
+ * Provides an implementation of the RSA cipher
+ * 
+ * @author igMoreira
+ *
+ */
+public class RSA {
+	
+	/**
+	 * Encrypts a given plaintext using the
+	 * RSA encryption.
+	 * 
+	 * @param plainText: 2048-bit block to be encrypted.
+	 * @return
+	 */
+	public BigInteger encrypt(BigInteger plainText)
+	{
+		return null;
+	}
+	
+	public BigInteger edecrypt(BigInteger cipherText)
+	{
+		return null;
+	}
+}

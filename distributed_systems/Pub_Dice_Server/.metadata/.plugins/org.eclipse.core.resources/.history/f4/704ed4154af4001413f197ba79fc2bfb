@@ -1,0 +1,10 @@
+import java.net.InetAddress;
+
+
+public class ResponseController extends Thread{
+
+	public ResponseController(String message, int port, InetAddress IPAddress) {
+		// TODO Auto-generated constructor stub
+	}
+	
+}

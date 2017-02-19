@@ -1,0 +1,130 @@
+
+
+public class CA {
+	private static int step=0;
+	private static ParallelCellularAutomaton pca;
+	private static byte[] state;
+	private static int n;
+
+	public static void main(String[] args) {
+
+		n = validateNumberOfElements(args[1]);
+		int s = validateNumberOfSteps(args[2]);
+		int[] positions = {2,3,5,6,8,10,11,16,17,18};
+		byte[] updateRule = validateUpdateRule(args[0]);
+
+		// Creates a bit set of length equals n
+		// All bits are initially false (0)
+		state = new byte[n];
+
+		// Set true (1) in the specified positions
+		for (int i = 0; i < positions.length; i++) {
+			state[positions[i]] = 1;
+		}
+
+		pca = new ParallelCellularAutomaton(updateRule);
+
+		while(s > 0)
+		{
+			step++;
+			state = pca.calcNextState(state);
+			s--;
+		}
+
+		displayMetrics();
+	}
+
+	public static int getSteps() {
+		return step;
+	}
+
+	private static void displayMetrics()
+	{
+		System.out.printf("Smallest popcount: %d at step %d\n",pca.getSmallestPopCounter(),pca.getSmallestPopStep());
+		System.out.printf("Largest popcount: %d at step %d\n",pca.getLargestPopCounter(),pca.getLargestPopStep());
+		System.out.printf("Final popcount: %d at step %d\n",pca.getPopCounter(state),step);
+	}
+
+	private static byte[] validateUpdateRule(String inputedRule)
+	{
+		byte[] cells = inputedRule.getBytes();
+		for (int i = 0; i < cells.length; i++) {
+			if(cells[i] != 48 && cells[i] != 49)
+			{
+				System.out.println("Just 0s or 1s are valid in the update rule");
+				System.exit(0);
+			}
+			try{
+				cells[i] = (byte) Integer.parseInt(inputedRule.charAt(i) + "");
+			}
+			catch(Exception e)
+			{
+				System.out.println("Just numbers are allowed in the update rule");
+				System.exit(1);
+			}
+		}
+		return cells;
+	}
+
+	private static int validateNumberOfElements(String numberOfElements)
+	{
+		int n = 0;
+		try{
+			n = Integer.parseInt(numberOfElements);
+			if(n < 1)
+			{
+				System.out.println("The number of cells must be >= 1");
+				System.exit(3);
+			}
+		}
+		catch(Exception e)
+		{
+			System.out.println("The number of cells must be a valid number.");
+			System.exit(2);
+		}
+		return n;
+	}
+
+	private static int validateNumberOfSteps(String numberOfSteps)
+	{
+		int s = 0;
+		try{
+			s = Integer.parseInt(numberOfSteps);
+			if(s < 1)
+			{
+				System.out.println("The number of steps must be >= 1");
+				System.exit(3);
+			}
+		}
+		catch(Exception e)
+		{
+			System.out.println("The number of steps must be a valid number.");
+			System.exit(2);
+		}
+		return s;
+	}
+
+	private static int[] validatePositions(String ... positions)
+	{
+		int[] p = new int[positions.length];
+		for (int i=0; i<positions.length; i++) {
+			try{
+				p[i] = Integer.parseInt(positions[i]);
+				if(p[i] < 0 || p[i] > )
+				{
+					System.out.println("The number of steps must be >= 1");
+					System.exit(3);
+				}
+			}
+			catch(Exception e)
+			{
+				System.out.println("The number of steps must be a valid number.");
+				System.exit(2);
+			}
+		}
+
+		return null;
+
+	}
+
+}

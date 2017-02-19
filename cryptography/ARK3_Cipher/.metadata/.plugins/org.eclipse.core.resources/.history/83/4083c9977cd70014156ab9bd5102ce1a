@@ -1,0 +1,115 @@
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.util.Scanner;
+
+import edu.rit.util.Hex;
+
+/***
+ * 
+ * @author igMoreira
+ *	Offers an application to encrypt files using ARK3 in CFB mode
+ */
+public class SubkeyTest{
+	
+	/***
+	 * The main method responsible for execute the Encrypt application.
+	 * 
+	 * @param args: Holds the user parameters in the command line.
+	 * 
+	 * @InvalidParameterException: If the user provides the incorrect parameter this exception is thrown
+	 * @RuntimeException: If the plain text file provided does not exist or cannot be openned this exception occurs.
+	 * @IOException: If a cypher text file cannot be created this exception occurs.
+	 * @FileNotFoundException: If is not possible to read or write in the file this exception occurs.
+	 */
+	public static void main(String[] args) {
+		String plainText = "fedcba9876543210";
+		String key = "0123456789abcdef0123456789abcdef";
+		Ark3 cipher = new Ark3(Hex.toByteArray(key));
+		byte[] result = cipher.execute(Hex.toByteArray(plainText));
+		System.out.println();
+//		System.out.println(Hex.toString((result[0]^73)&255));
+		System.out.println((0x0e^0x49)&255);
+	}
+	
+	/***
+	 * Responsible for verifying if a the key provided by the user
+	 * avails with the ark3 requirements
+	 * 
+	 * @param key: String provided by the user
+	 * @return: A 128-bit byte array containing the key
+	 */
+	private static byte[] validateKey(String key)
+	{
+		byte[] convertedKey = new byte[16];
+		if(key.length() != 32)
+		{
+			System.out.println("KEY ERROR: Key must be 32 Hexadecimal digits");
+			System.exit(2);
+		}
+		try{
+			convertedKey = Hex.toByteArray(key);
+		}
+		catch(Exception e)
+		{
+			System.out.println("KEY ERROR: Key must contain only valid Hexadecimal digits");
+			System.exit(1);
+		}
+		return convertedKey;
+	}
+	
+	/***
+	 * Responsible for verifying if the IV provided by the user
+	 * avails with the ark3 requirements
+	 * 
+	 * @param IV: String provided by the user
+	 * @return: A 64-bit byte array containing the IV
+	 */
+	private static byte[] validateIV(String IV)
+	{
+		byte[] convertedIV = new byte[8];
+		if(IV.length() != 16)
+		{
+			System.out.println("IV ERROR: IV must be 16 Hexadecimal digits");
+			System.exit(2);
+		}
+		try{
+			convertedIV = Hex.toByteArray(IV);
+		}
+		catch(Exception e)
+		{
+			System.out.println("IV ERROR: IV must contain only valid Hexadecimal digits");
+			System.exit(1);
+		}
+		return convertedIV;
+	}
+	
+	/***
+	 * Responsible for converting a given plain text to an array
+	 * containing the hex code of the characters.
+	 * 
+	 * @return: A byte array containing the text of the file
+	 */
+	private static byte[] validateFileContent(String content)
+	{
+		byte[] convertedContent = new byte[1];
+		try{
+			StringBuilder builder = new StringBuilder();
+			for (int i = 0; i < content.length(); i++) {
+				String aux = Hex.toString((byte)content.charAt(i));
+				if(!aux.equalsIgnoreCase("0d"))
+					builder.append(aux);
+			}
+			convertedContent = Hex.toByteArray(builder.toString());
+		}
+		catch(Exception e)
+		{
+			System.out.println("FILE ERROR: Error trying to convert plain text file to hex");
+			System.out.println("The file must contain only valid hex characters");
+			System.exit(3);
+		}
+		return convertedContent;
+	}
+
+}

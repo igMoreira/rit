@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<launchConfiguration type="org.eclipse.jdt.launching.localJavaApplication">
+<listAttribute key="org.eclipse.debug.core.MAPPED_RESOURCE_PATHS">
+<listEntry value="/ARSimon/src/CrackSimon.java"/>
+</listAttribute>
+<listAttribute key="org.eclipse.debug.core.MAPPED_RESOURCE_TYPES">
+<listEntry value="1"/>
+</listAttribute>
+<booleanAttribute key="org.eclipse.jdt.launching.ATTR_USE_START_ON_FIRST_THREAD" value="true"/>
+<stringAttribute key="org.eclipse.jdt.launching.MAIN_TYPE" value="CrackSimon"/>
+<stringAttribute key="org.eclipse.jdt.launching.PROGRAM_ARGUMENTS" value="3E71512ADB3C B62B2D082D74 66E898BA27DC 2CDE38B81EE2 BB3AB735874F 3B4F5D2D715B 04F0E45AE7DA 4BD5CD09F04A DCCD89A17D42 2A0E1599E7D3"/>
+<stringAttribute key="org.eclipse.jdt.launching.PROJECT_ATTR" value="ARSimon"/>
+</launchConfiguration>

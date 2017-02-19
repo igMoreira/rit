@@ -1,0 +1,10 @@
+import java.util.BitSet;
+
+
+public class ParallelCellularAutomaton {
+
+	public BitSet calcNextState(BitSet currentState)
+	{
+		return null;
+	}
+}

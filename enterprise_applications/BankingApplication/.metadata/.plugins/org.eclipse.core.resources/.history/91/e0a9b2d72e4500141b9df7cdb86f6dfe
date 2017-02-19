@@ -1,0 +1,6 @@
+package domain.banking.swen.rit;
+
+public class Bank {
+
+	private Integer bankAgency;
+}

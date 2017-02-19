@@ -1,0 +1,63 @@
+import java.io.IOException;
+import java.net.UnknownHostException;
+
+
+public class PubDice {
+
+	
+	public static void main(String[] args) {
+		usage(args);
+		String host = args[0];
+		int port = 0;
+		String playerName = args[2];
+		try{
+			port = Integer.parseInt(args[1]);
+		}
+		catch(Exception e)
+		{
+			System.out.println("The port must be a valid number");
+			System.exit(0);
+		}
+		// Creates the view and configures it
+		PubDiceUI view = new PubDiceUI();
+		view.setTitle("My Pub Dice client");
+		view.setVisible(true);
+		
+		ServerProxy model = null;
+		try {
+			// initializes the socket connection
+			model = new ServerProxy(host, port);
+		} catch (UnknownHostException e) {
+			System.out.printf("CONNECTION ERROR: Error trying connect to host\n");
+			e.printStackTrace();
+			System.exit(0);
+		} catch (IOException e) {
+			System.out.printf("CONNECTION ERROR: Error trying to get server I/O\n");
+			e.printStackTrace();
+			System.exit(1);
+		}
+		
+		// Creates the request controller so it can start the match
+		RequestController requestController = new RequestController();
+		
+		// Creates the response controller and adds it as a "listener" to the receiver thread
+		ResponseController responseController = new ResponseController(playerName, view);
+		model.getReceiver().subscribe(responseController);
+		
+		// Initializes the match
+		requestController.startMatch("Someone");
+	}
+	
+	public static void usage(String args[])
+	{
+		if(args.length != 3)
+		{
+			System.out.print("SYNTAX ERROR: Correct syntax is ");
+			System.out.println("java PubDice <host> <port> <playername>");
+			System.out.println("<host> is the host name or IP address of the server.");
+			System.out.println("<port> is the port number of the server.");
+			System.out.println("<playername> is the name of the player. The player name must not include any whitespace.");
+			System.exit(0);
+		}
+	}
+}

@@ -1,0 +1,34 @@
+import java.io.IOException;
+import java.net.UnknownHostException;
+
+
+public class PubDice {
+
+	
+	public static void main(String[] args) {
+		PubDiceUI view = new PubDiceUI();
+		view.setTitle("My Pub Dice client");
+		view.setVisible(true);
+		view.enableButtons(false);
+		Server server;
+		try {
+			server = new ServerProxy();
+		} catch (UnknownHostException e) {
+			System.out.printf("CONNECTION ERROR: Error trying connect to host\n");
+			e.printStackTrace();
+			System.exit(0);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			System.out.printf("CONNECTION ERROR: Error trying to get server I/O\n");
+			e.printStackTrace();
+			System.exit(1);
+		}
+		try {
+			server.join();
+		} catch (IOException e) {
+			System.out.printf("REQUEST ERROR: Error sending request or receiving response\n");
+			e.printStackTrace();
+			e.printStackTrace();
+		}
+	}
+}

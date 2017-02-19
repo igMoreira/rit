@@ -1,0 +1,21 @@
+/***
+ * 
+ * @author igMoreira
+ *	Represents a thread in the system, each thread will work in the calc of the
+ *	area of the curved figured. The number of workers is specified by the user.
+ */
+public class CalcWorker implements Runnable {
+
+	public CalcWorker(Double[] function, Double startPoint, Double endPoint, int numIntervals) {
+		
+	}
+	
+	/***
+	 * Will execute the thread.
+	 */
+	@Override
+	public void run() {
+		
+	}
+
+}

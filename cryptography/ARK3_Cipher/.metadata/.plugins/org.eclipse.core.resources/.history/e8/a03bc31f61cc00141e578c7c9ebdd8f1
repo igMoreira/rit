@@ -1,0 +1,58 @@
+import edu.rit.util.Packing;
+
+public class Ark3 {
+	 private byte[] keyState = new byte[16];
+	 private final int numRounds = 27;
+	 private final int blockSize = 8; // blocks in bytes
+	 
+	 public Ark3(byte[] key) {
+		this.keyState = key;
+	}
+	 
+	 public byte[] execute(byte[] text) {
+		/*byte[] output = new byte[text.length];
+		byte[] state = {0,0,0,0,0,0,0,0};
+		for (int i = 7; (i < text.length); i+=7) {
+			if( i <= text.length )
+			{
+				System.arraycopy(text, i-7, state, 0, blockSize);
+			}
+			else
+			{
+				System.arraycopy(text, i-7, state, 0, text.length - (i-7));
+			}
+			System.arraycopy(Ark3Cipher(state), 0, output, i-7, blockSize);
+		}*/
+		return Ark3Cipher(text); // text is equals the IV for the first round or the cipherText for the next rounds
+	 }
+	 
+	 private byte[] Ark3Cipher(byte[] state)
+	 {
+		for (int i = 0; i < 27; i++) {
+			byte[] subkey = generateSubkey(); // needs to know the input of the subkey generator
+			for (int j = 0; j < subkey.length; j++) {
+				state[j] = (byte) (state[j] ^ subkey[j]);
+			}
+			state = mix(permutation(state));
+		}
+		return state;
+	 }
+	 
+	 private byte[] generateSubkey()
+	 {
+		 int[] rotl = new int[4];
+		 Packing.packIntLittleEndian(keyState, 0, rotl, 0, 128);
+		 return new byte[1];
+	 }
+	 
+	 private byte[] permutation(byte[] state)
+	 {
+		 throw new UnsupportedOperationException("Not implemented yet");
+	 }
+	 
+	 private byte[] mix(byte[] state)
+	 {
+		 throw new UnsupportedOperationException("Not implemented yet");
+	 }
+	 
+}

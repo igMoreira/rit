@@ -1,0 +1,43 @@
+import java.util.ArrayList;
+import java.util.List;
+
+/***
+ * 
+ * @author igMoreira
+ *	Will hold a shared buffer between threads, the value of every thread execution 
+ *	will be the sum of the rectangles areas in the interval the sum of all threads
+ *	values is the desired area of the curved figure.
+ */
+public class SharedBuffer{
+	
+	private Double curvedFigureArea = 0D; // Will hold the value of the curved figure area
+	private List<Double> threadsResult = new ArrayList<Double>(); // Will hold the results for each thread
+	
+	/***
+	 * Getter method for the threads result
+	 * @return List of threads result
+	 */
+	public List<Double> getThreadsResult() {
+		return threadsResult;
+	}
+
+	/***
+	 * Add the value of the calc of a thread in the total area value.
+	 * 
+	 * @param value: value to be summed in the total area.
+	 */
+	public synchronized void addArea(Double value)
+	{
+		this.threadsResult.add(value);
+		this.curvedFigureArea += value;
+	}
+	
+	/***
+	 * Get the total area value
+	 * @return: total area of the curve
+	 */
+	public synchronized Double getArea()
+	{
+		return this.curvedFigureArea;
+	}
+}

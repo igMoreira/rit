@@ -1,0 +1,8 @@
+
+public abstract class ReceiverThread extends Thread implements Subject{
+	
+	@Override
+	public void notifyObservers() {	
+	}
+	
+}

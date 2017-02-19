@@ -1,0 +1,8 @@
+package interfaces;
+
+public interface StreamCipher {
+
+	public void setKey(byte[] key);
+	public int encrypt(int p);
+	public int decrypt(int p);
+}

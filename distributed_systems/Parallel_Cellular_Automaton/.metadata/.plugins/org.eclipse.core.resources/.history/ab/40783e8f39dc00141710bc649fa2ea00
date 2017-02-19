@@ -1,0 +1,95 @@
+import java.util.Arrays;
+
+import edu.rit.pj2.Loop;
+import edu.rit.pj2.Task;
+import edu.rit.pj2.vbl.IntVbl;
+
+
+public class ParallelCellularAutomaton extends Task{
+
+	private byte[] updateRule;
+	private int smallestPopCounter = Integer.MAX_VALUE;
+	private int smallestPopStep = 0;
+	private int largestPopCounter = 0;
+	private int largestPopStep = 0;
+	IntVbl popCounter = new IntVbl.Sum(0);
+	
+	public int getSmallestPopCounter() {
+		return smallestPopCounter;
+	}
+
+	public int getSmallestPopStep() {
+		return smallestPopStep;
+	}
+
+	public int getLargestPopCounter() {
+		return largestPopCounter;
+	}
+
+	public int getLargestPopStep() {
+		return largestPopStep;
+	}
+
+	public ParallelCellularAutomaton(byte[] updateRule) {
+		this.updateRule = updateRule;
+	}
+	
+	public byte[] calcNextState(final byte[] currentState)
+	{
+		final byte[] copy = Arrays.copyOf(currentState, currentState.length);
+		/*for (int i = 0; i < currentState.length; i++) {
+			Worker w = new Worker();
+			copy[i] = w.calcPositionState(currentState, updateRule, i)[i];
+		}*/
+		
+		
+		parallelFor(0, currentState.length-1).exec(
+				new Loop() {
+					IntVbl threadCounter;
+					
+					public void start()
+					{
+						threadCounter = threadLocal (popCounter);
+					}
+					
+					@Override
+					public void run(int i) throws Exception {
+						Worker w = new Worker();
+						copy[i] = w.calcPositionState(currentState, updateRule, i)[i];
+						if(copy[i] == 1)
+							++threadCounter.item;
+					}
+				}
+		);
+		
+//		int popCounter = getPopCounter(copy);
+		if(popCounter.item > largestPopCounter)
+		{
+			largestPopCounter = popCounter.item;
+			largestPopStep = CA.getSteps();
+		}
+		else if(popCounter < smallestPopCounter)
+		{
+			smallestPopCounter = popCounter;
+			smallestPopStep = CA.getSteps();
+		}
+		
+		return copy;
+	}
+	
+	public int getPopCounter(byte[] currentState)
+	{
+		int popCounter = 0;
+		for (int i = 0; i < currentState.length; i++) {
+			if(currentState[i] == 1)
+				popCounter++;
+		}
+		return popCounter;
+	}
+
+	@Override
+	public void main(String[] arg0) throws Exception {
+		// TODO Auto-generated method stub
+		
+	}
+}

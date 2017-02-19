@@ -1,0 +1,62 @@
+import java.util.Random;
+
+
+public class Match {
+	private Player playerONE;
+	private Player playerTWO;
+	private Player currentPlayer;
+	private Player waitingPlayer;
+	
+	public Match(Player playerONE, Player playerTWO) {
+		this.playerONE = playerONE;
+		this.playerTWO = playerTWO;
+		currentPlayer = this.playerONE;
+		waitingPlayer = this.playerTWO;
+	}
+
+	public Player getPlayerONE() {
+		return playerONE;
+	}
+
+	public Player getPlayerTWO() {
+		return playerTWO;
+	}
+
+	public Player getCurrentPlayer() {
+		return currentPlayer;
+	}
+
+	public Player getWaitingPlayer() {
+		return waitingPlayer;
+	}
+
+	public void updateCurrentPlayer() {
+		if(currentPlayer == playerONE)
+		{
+			currentPlayer = playerTWO;
+			waitingPlayer = playerONE;
+		}
+		else
+		{
+			currentPlayer = playerONE;
+			waitingPlayer = playerTWO;
+		}
+	}
+	
+	public int[] rollDice()
+	{
+		int[] dice = new int[2];
+		Random rand = new Random();
+		dice[0] = rand.nextInt((6-1)+1)+1;
+		System.out.println(dice[0]);
+		dice[1] = rand.nextInt((6-1)+1)+1;
+		System.out.println(dice[1]);
+		return dice;
+	}
+	
+	public void flipTile(Player player)
+	{
+		
+	}
+	
+}

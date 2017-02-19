@@ -1,0 +1,58 @@
+import java.math.BigInteger;
+
+/**
+ * Provides an implementation of the RSA cipher
+ * 
+ * @author igMoreira
+ *
+ */
+public class RSA {
+	private BigInteger modulus;
+	private BigInteger encryptionExponent;
+	
+	public void setModulus(BigInteger modulus) {
+		this.modulus = modulus;
+	}
+
+	public void setExponent(BigInteger exponent) {
+		this.encryptionExponent = exponent;
+	}
+
+	/**
+	 * Encrypts a given plaintext using the
+	 * RSA encryption.
+	 * 
+	 * @param plainText: 2048-bit block to be encrypted.
+	 * @return: 2048-bit block encrypted
+	 */
+	public BigInteger encrypt(BigInteger plainText)
+	{
+		return this.modularExponentiation(plainText,this.encryptionExponent);
+	}
+	
+	/**
+	 * Decrypts a given cipher text using the
+	 * RSA decryption.
+	 * 
+	 * @param cipherText: 2048-bit block to be decrypted.
+	 * @return: 2048-bit block decrypted
+	 */
+	public BigInteger decrypt(BigInteger cipherText, BigInteger modulusTest)
+	{
+		BigInteger p = modulus.gcd(modulusTest);
+		BigInteger q = modulus.divide(p);
+		BigInteger aux = encryptionExponent.modInverse(eulerTotient(p, q));
+		return cipherText.modPow(aux, modulus);
+	}
+	
+	private BigInteger modularExponentiation(BigInteger base, BigInteger exponent)
+	{
+		return base.modPow(exponent, modulus);
+	}
+	
+	private BigInteger eulerTotient(BigInteger p, BigInteger q)
+	{
+		return (p.subtract(BigInteger.ONE).multiply(q.subtract(BigInteger.ONE)));
+	}
+
+}

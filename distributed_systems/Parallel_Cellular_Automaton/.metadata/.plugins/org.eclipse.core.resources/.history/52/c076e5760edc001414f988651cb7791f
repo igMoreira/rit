@@ -1,0 +1,64 @@
+import java.util.BitSet;
+
+
+public class CA {
+	private static int step=0;
+	private static ParallelCellularAutomaton pca;
+	private static BitSet state;
+	
+	public static void main(String[] args) {
+
+		String inputedRule = "01111000";
+		int n = 20;
+		int s = 20;
+		int[] positions = {2,3,5,6,8,10,11,16,17,18};
+		
+		BitSet updateRule = BitSet.valueOf(test);
+		
+		// Creates a bit set of length equals n
+		// All bits are initially false (0)
+		state = new BitSet(n);
+		
+		// Set true (1) in the specified positions
+		for (int i = 0; i < positions.length; i++) {
+			state.set(positions[i], true);
+		}
+		
+		pca = new ParallelCellularAutomaton(updateRule);
+		
+		while(s > 0)
+		{
+			step++;
+			state = pca.calcNextState(state);
+			s--;
+		}
+		
+		displayMetrics();
+	}
+	
+	public static int getSteps() {
+		return step;
+	}
+
+	private static void displayMetrics()
+	{
+		System.out.printf("Smallest popcount: %d at step %d\n",pca.getSmallestPopCounter(),pca.getSmallestPopStep());
+		System.out.printf("Largest popcount: %d at step %d\n",pca.getLargestPopCounter(),pca.getLargestPopStep());
+		System.out.printf("Final popcount: %d at step %d\n",pca.getPopCounter(state),step);
+	}
+	
+	private static BitSet validateUpdateRule(String inputedRule)
+	{
+		byte[] cells = inputedRule.getBytes();
+		for (int i = 0; i < cells.length; i++) {
+			if(cells[i] != 48 && cells[i] != 49)
+			{
+				System.out.println("Just 0s or 1s are valid in the update rule");
+				System.exit(0);
+			}
+			cells[i] = (byte) Integer.parseInt(inputedRule, inputedRule.charAt(i));
+		}
+		return null;
+	}
+
+}
